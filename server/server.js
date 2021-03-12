@@ -27,6 +27,6 @@ stayAwake.prevent(function(err, data) {
 
 app.use('/', express.static(config.www, {index: 'welcomePage.html', extension: ['HTML'] }));
 
-app.listen(config.PORT, (err) => {
-  console.log(`Server runnning on port ${config.PORT}!`);
+app.listen(config.PORT || 8080, (err) => {
+  console.log(`Server runnning on port ${config.PORT || 8080}!`);
 });
