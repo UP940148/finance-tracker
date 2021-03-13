@@ -24,6 +24,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "multer": "^1.4.2",
+    "qif2json": "^0.4.0",
     "simple-google-openid": "^0.4.1",
     "sqlite-async": "^1.1.1",
     "stay-awake": "0.0.3"
