@@ -7,6 +7,7 @@ const stayAwake = require('stay-awake');
 const googleAuth = require('simple-google-openid');
 const auth = googleAuth(config.OAUTH_CLIENT_ID);
 const multer = require('multer');
+const qif2json = require('qif2json');
 
 const app = express();
 
@@ -30,3 +31,9 @@ app.use('/', express.static(config.www, {index: 'welcomePage.html', extension: [
 app.listen(config.PORT || 8080, (err) => {
   console.log(`Server runnning on port ${config.PORT || 8080}!`);
 });
+
+
+
+// qif2json.parseFile('./test.qif', function(err, qifData) {
+//   console.log(err || qifData);
+// })
