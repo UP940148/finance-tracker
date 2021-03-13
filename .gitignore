@@ -131,3 +131,5 @@ dmypy.json
 # Node Project
 node_modules/
 sqlite.db
+test.qif
+oldTest.qif
