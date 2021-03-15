@@ -21,7 +21,7 @@
 Put an '@' before the UP number of anyone that you want to tag, or in Steven's case, put it before his username 'ossonts'
 
 - ossonts  => Steven
-- UP491048 => Daniel
+- UP491048 => Daniel (Tag me in anything you want and I'll try and get around to reading it)
 - UP939775 => Shadille
 - UP939741 => Glen
 - UP932700 => Zain
