@@ -26,13 +26,13 @@
     "multer": "^1.4.2",
     "qif2json": "^0.4.0",
     "simple-google-openid": "^0.4.1",
-    "sqlite-async": "^1.1.1",
-    "stay-awake": "0.0.3"
+    "sqlite-async": "^1.1.1"
   },
   "devDependencies": {
     "eslint": "^7.22.0",
     "eslint-config-portsoc": "^0.8.1",
     "jest": "^26.6.3",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "stay-awake": "0.0.3"
   }
 }
