@@ -32,12 +32,6 @@ app.listen(config.PORT || 8080, (err) => {
   console.log(`Server runnning on port ${config.PORT || 8080}!`);
 });
 
-app.get('/images/:imageTitle', (req, res) => {
-  const title = req.params.imageTitle;
-  const file = config.imageStore + title;
-  res.sendFile(file);
-})
-
 // qif2json.parseFile('./test.qif', function(err, qifData) {
 //   console.log(err || qifData);
 // })

@@ -2,8 +2,6 @@ const path = require('path');
 
 module.exports.www = path.join(__dirname, '/www/');
 
-module.exports.imageStore = path.join(__dirname, '/server/images/')
-
 module.exports.DBSOURCE = 'sqlite.db';
 module.exports.PORT = 8080;
 
