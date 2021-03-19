@@ -17,7 +17,6 @@ p, h1, h2, h3, h4, input, a, button, label, div {
     font-weight: 100;
 }
 
-
 /* Navigation styles */
 .header {
     background-color: #fff;
@@ -70,6 +69,7 @@ p, h1, h2, h3, h4, input, a, button, label, div {
     cursor: pointer;
     background-color: #29a71898;
     transition: all 0.3s ease 0s;
+    width: fit-content;
 }
 
 .default-button:hover {
@@ -79,7 +79,7 @@ p, h1, h2, h3, h4, input, a, button, label, div {
 .main {
     padding: 2rem 15% 2rem 15%;
     text-align: center;
-    background-color: #4dc23e65;  
+    background-color: #4dc23e65;
 }
 
 
@@ -166,18 +166,56 @@ p, h1, h2, h3, h4, input, a, button, label, div {
     border-radius: 10px;
 }
 
-/* DASHOBOARD STYLE */
+/* DASHOBOARD STYLES */
 
 .main-dashboard {
-    padding: 6rem 15% 2rem 15%;
-    text-align: center;
+    padding: 2rem 15% 2rem 15%;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
+    flex-wrap: wrap ;
 }
 
-.main-dashboard div {
-    margin: 0rem 1rem;
+.dashboard-main-panel{
+    flex: 3;
+    height: 30rem;
+    width: 100%;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+
+.dashboard-icons{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 1rem 0rem;
+}
+
+
+.dash-icon {
+    background-color: #fff;
+    height: 12rem;
+    width: 100%;
+    margin: .3rem;
+    border-radius: 10px;
+}
+
+.dash-icon h2, hr, p, div{
+    margin: .5rem;
+}
+
+.dash-icon div {
+    float: left;
+}
+
+.dash-icon img {
+    object-fit: cover;
+    height: 100%;
+    max-width: 10rem;
+    max-height: 10rem;
+    float: left;
+    padding: 1rem;
 
 }
 
@@ -185,19 +223,54 @@ p, h1, h2, h3, h4, input, a, button, label, div {
     flex: 1;
     width: 100%;
     border: 1px;
-    background-color: rgba(0, 0, 0, 0.082);
+    background-color: #fff;
     border-radius: 10px;
-    border: 1px solid black;
+    height: 15rem;
+    padding: 1rem;
+    margin-top: 5.5rem;
+    text-align: center;
 }
 
-.dashboard-main-panel{
-    flex: 3;
+.panel-content {
+    height: 10rem;
+    overflow-y: scroll;
+}
 
-
-    height: 30rem;
-    width: 100%;
-    border: 1px;
-    background-color: rgba(0, 0, 0, 0.082);
+.panel-content h3 {
     border-radius: 10px;
-    border: 1px solid black;
+    width: 100%;
+    padding: 1rem 0rem;
+    text-align: center;
+}
+
+hr {
+    margin: .5rem;
+}
+
+
+
+
+
+
+@media(max-width:1000px) {
+    .main {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    .header {
+        padding-left: 3%;
+        padding-right: 3%;
+        font-size: large;
+    }
+
+    .hero {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    .main-dashboard {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
 }
