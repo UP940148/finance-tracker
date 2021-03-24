@@ -279,6 +279,7 @@ hr {
     border-radius: 10px;
     height: 2rem;
     width: 55%;
+    border: 2px solid black;
 
 }
 
@@ -288,12 +289,41 @@ hr {
     max-height: 10rem;
     max-width: 95%;
     width: 95%;
+    border: 2px solid black;
 
 }
 
 .contact-side-text {
     text-align: center;
 }
+
+/* ABOUT PAGE */
+
+.about { 
+    text-align: center;
+}
+
+.about-text {
+    padding: 1rem 2rem;
+}
+
+.about h3 {
+    font-style: italic;
+    color: rgba(64, 56, 56, 0.498);
+    margin: 1rem 8rem;
+}
+
+.about p {
+    padding: 2rem 5rem;
+}
+
+.about hr {
+    width: 50%;
+    align-items: center;
+    margin: 0% 25% ;
+}
+
+
 
 
 
