@@ -197,6 +197,8 @@ p, h1, h2, h3, h4, input, a, button, label, div, li, ul, textarea {
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 1rem 0rem;
+    overflow-y: scroll;
+    height: 85vh;
 }
 
 
