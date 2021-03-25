@@ -299,7 +299,7 @@ hr {
 
 /* ABOUT PAGE */
 
-.about { 
+.about {
     text-align: center;
 }
 
@@ -358,7 +358,7 @@ hr {
         padding-left: 3%;
         padding-right: 3%;
     }
-    
+
     .welcome-content div {
         width: 90%;
         padding: 1rem;
@@ -370,7 +370,7 @@ hr {
     padding-top: 2rem;
     justify-content: space-around;
 }
-    
+
     .welcome-content div img {
         height: 7rem;
         padding: .5rem;
