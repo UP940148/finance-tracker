@@ -24,6 +24,32 @@ Server running on port XXXX!
 ```
 The application can then be accessed by directing your browser to `localhost:XXXX` where `XXXX` is the port number specified in the messages above (Defaults to port 8080)
 
+## API Routes
+
+### HTTP response status codes
+
+- `200` - The request has succeeded
+- `201` - The request has succeeded and the new resource has been created
+- `400` - Something went wrong
+- `404` - The requested resource could not be found
+
+### User Routes
+
+- POST `<root>/user/` - Create a new record for a user
+  - JSON body is made up of `googleId (int)`, `name (text)`, and `email (text)`
+  - Returns no JSON data
+- GET `<root>/users/` - Retrieves a list of all users in database
+  - Takes no body or parameters
+  - If successful, JSON data contains a list of all user records
+- GET `<root>/user/:googleId` - Retrieves the user record associated with the provided id
+  - Takes `googleId (int)` as a parameter
+  - If successful, JSON data contains the requested record
+- PATCH `<root>/user/:googleId` - Updates the user record associated with the provided id
+  - Takes `googleId (int)` as a parameter and `name (text)`, and `email (text)` in the JSON body
+  - Returns no JSON data
+- DELETE `<root>/user/:googleId` - Deletes the user record associated with the provided id
+  - Takes `googleId (int)` as a parameter
+  - Returns no JSON data
 
 ## Evaluation
 
