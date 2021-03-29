@@ -169,7 +169,6 @@ p, h1, h2, h3, h4, input, a, button, label, div, li, ul, textarea {
 .subpage-content{
     width: 100%;
     border: 1px;
-    background-color: #fff;
     border-radius: 10px;
 }
 
@@ -256,6 +255,51 @@ hr {
     margin: .5rem;
 }
 
+/* MONEY SAVING TIPS PAGE */
+
+.saving-tips{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 0;
+}
+
+.tip-icon {
+    margin: .5rem;
+    width: 30%;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.tip-icon h3 {
+    margin: .9rem;
+}
+
+.tip-icon p {
+    margin: 1rem;
+}
+
+.tip-icon img {
+    object-fit: cover;
+    height: 100%;
+    max-width: 3rem;
+    max-height: 3rem;
+    float: left;
+    padding: .5rem;
+    margin: 0rem 0rem 0rem .5rem;
+    border-radius: 100px;
+}
+
+.saving-tips-intro {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 1rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+
+
 
 /* CONTACT PAGE */
 
@@ -263,6 +307,7 @@ hr {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap-reverse;
+    background-color: #fff;
 
 }
 
@@ -303,6 +348,7 @@ hr {
 
 .about {
     text-align: center;
+    background-color: #fff;
 }
 
 .about-text {
@@ -367,15 +413,26 @@ hr {
     }
 
     .welcome-content {
-    display: flex;
-    flex-wrap: wrap;
-    padding-top: 2rem;
-    justify-content: space-around;
+        display: flex;
+        flex-wrap: wrap;
+        padding-top: 2rem;
+        justify-content: space-around;
 }
 
     .welcome-content div img {
         height: 7rem;
         padding: .5rem;
         float: left;
+    }
+
+    .tip-icon {
+        margin: .5rem;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 10px;
+    }
+
+    .tip-icon img {
+        margin-top: .5rem;
     }
 }
