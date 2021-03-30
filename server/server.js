@@ -130,7 +130,7 @@ app.patch('/user/:userId/', jsonParser, async (req, res) => {
   }
 
   // If user exists, proceed with update
-  const data = [req.params.userId, req.body.name, req.body.email];
+  const data = [req.body.name, req.body.email, parseInt(req.params.userId)];
   const err = await db.updateUser(data);
   // If an error occured, return 400
   if (err) {
@@ -190,8 +190,8 @@ app.get('/transactions/', async (req, res) => {
     });
     return;
   }
-  if (!response.context) {
-    res.status(404).json({
+  if (response.context.length === 0) {
+    res.status(204).json({
       success: false,
     });
     return;
@@ -307,6 +307,67 @@ app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
     success: true,
     data: response.context,
   });
+});
+
+app.patch('/transaction/:transactionId/', jsonParser, async (req, res) => {
+  // Check if transaction exists
+  const response = await db.getTransactionById(req.params.transactionId);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If transaction not found, return 404
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If transaction exists, proceed with update
+  const data = [req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory, req.params.transactionId];
+  const err = await db.updateTransaction(data);
+  // If an error occured, return 400
+  if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  // If user was successfully updated, return 201
+  res.status(201).json({ success: true });
+});
+
+app.delete('/transaction/:transactionId', async (req, res) => {
+  // Check if transaction exists
+  const response = await db.getTransactionById(req.params.transactionId);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If transaction not found, return 404
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If transaction exists, proceed with delete
+  const err = await db.deleteTransaction(req.params.transactionId);
+  // If an error occured, return 400
+  if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  // If user was successfully deleted, return 200
+  res.status(200).json({ success: true });
 });
 
 // Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
