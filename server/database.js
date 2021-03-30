@@ -89,9 +89,9 @@ module.exports.updateUser = async function (values) {
   UPDATE user SET
   name = COALESCE(?, name),
   email = COALESCE(?, email)
-  WHERE userId = ${values[0]};`;
+  WHERE userId = ?;`;
 
-  const response = await db.run(sql, [values[1], values[2]])
+  const response = await db.run(sql, values)
     .then(() => {
       return null;
     })
@@ -180,18 +180,52 @@ module.exports.getUserTransactionsBetweenDates = async function (userId, startDa
   return response;
 };
 
-/*
-X CREATE user
-X RETRIEVE all users
-X RETRIEVE user
-X UPDATE user
-X DELETE user
+module.exports.updateTransaction = async function (values) {
+  const sql = `
+  UPDATE transactions SET
+  date = COALESCE(?, date),
+  amount = COALESCE(?, amount),
+  memo = COALESCE(?, memo),
+  address = COALESCE(?, address),
+  payee = COALESCE(?, payee),
+  category = COALESCE(?, category),
+  subcategory = COALESCE(?, subcategory)
+  WHERE transactionId = ?;`;
 
-X CREATE transaction
-X RETRIEVE all transactions
-X RETRIEVE transaction
-X RETRIEVE all transactions from a user
-X RETRIEVE transactions from a user between two dates
-UPDATE transaction
-DELETE transaction
+  const response = await db.run(sql, values)
+    .then(() => {
+      return null;
+    })
+    .catch(err => {
+      return err;
+    });
+  return response;
+};
+
+module.exports.deleteTransaction = async function (transactionId) {
+  const sql = `DELETE FROM transactions WHERE transactionId = ${transactionId};`;
+  const response = await db.run(sql)
+    .then(() => {
+      return null;
+    })
+    .catch(err => {
+      return err;
+    });
+  return response;
+};
+
+/*
+TESTED X CREATE user
+TESTED X RETRIEVE all users
+TESTED X RETRIEVE user
+TESTED X UPDATE user
+TESTED X DELETE user
+
+TESTED X CREATE transaction
+TESTED X RETRIEVE all transactions
+TESTED X RETRIEVE transaction
+TESTED X RETRIEVE all transactions from a user
+TESTED X RETRIEVE transactions from a user between two dates
+TESTED X UPDATE transaction
+X DELETE transaction
 */
