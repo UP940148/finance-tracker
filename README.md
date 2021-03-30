@@ -30,6 +30,7 @@ The application can then be accessed by directing your browser to `localhost:XXX
 
 - `200` - The request has succeeded
 - `201` - The request has succeeded and the new resource has been created
+- `204` - There is no content to send for this request, but the headers may be useful
 - `400` - Something went wrong
 - `404` - The requested resource could not be found
 
