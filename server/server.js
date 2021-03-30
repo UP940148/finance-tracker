@@ -35,15 +35,19 @@ app.use('/', express.static(config.www, { index: 'welcomePage.html', extension: 
 
 // Set up web server on port specified in config file. Default to port 8080 if there's an error with config.PORT value
 app.listen(config.PORT || 8080, (err) => {
-  console.log(`Server runnning on port ${config.PORT || 8080}!`);
+  if (!err) {
+    console.log(`Server runnning on port ${config.PORT || 8080}!`);
+  } else {
+    console.log(err);
+  }
 });
 
 // qif2json.parseFile('./test.qif', function(err, qifData) {
 //   console.log(err || qifData);
 // })
 
-app.get('/favicon', (req, res) => {
-  res.sendFile(config.www + 'images/Wallet-icon.png');
+app.get('/favicon/', (req, res) => {
+  res.status(200).sendFile(config.www + 'images/Wallet-icon.png');
 });
 
 app.post('/user/', jsonParser, async (req, res) => {
