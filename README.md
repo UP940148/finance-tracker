@@ -44,15 +44,25 @@ Code definitions taken from https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 - GET `<root>/users/` - Retrieves a list of all users in database
   - Takes no body or parameters
   - If successful, JSON data contains a list of all user records
-- GET `<root>/user/:googleId` - Retrieves the user record associated with the provided id
+- GET `<root>/user/:googleId/` - Retrieves the user record associated with the provided id
   - Takes `googleId (int)` as a parameter
   - If successful, JSON data contains the requested record
-- PATCH `<root>/user/:googleId` - Updates the user record associated with the provided id
+- PATCH `<root>/user/:googleId/` - Updates the user record associated with the provided id
   - Takes `googleId (int)` as a parameter and `name (text)`, and `email (text)` in the JSON body
   - Returns no JSON data
-- DELETE `<root>/user/:googleId` - Deletes the user record associated with the provided id
+- DELETE `<root>/user/:googleId/` - Deletes the user record associated with the provided id
   - Takes `googleId (int)` as a parameter
   - Returns no JSON data
+
+### Transaction Routes
+
+- POST `<root>/transaction/`
+- GET `<root>/transactions/`
+- GET `<root>/transaction/:transactionId/`
+- GET `<root>/user/:userId/transactions/`
+- GET `<root>/user/:userId/transactions/:startDate/:endDate/`
+- PATCH `<root>/transaction/:transactionId/`
+- DELETE `<root>/transaction/:transactionId`
 
 ## Evaluation
 
