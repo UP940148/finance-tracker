@@ -28,6 +28,8 @@ The application can then be accessed by directing your browser to `localhost:XXX
 
 ### HTTP response status codes
 
+Code definitions taken from https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+
 - `200` - The request has succeeded
 - `201` - The request has succeeded and the new resource has been created
 - `204` - There is no content to send for this request, but the headers may be useful

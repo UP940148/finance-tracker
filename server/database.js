@@ -9,7 +9,7 @@ database.open(config.DBSOURCE)
     // Connection established. Create tables
     console.log('Connection to SQLite database has been established!');
     db.run(`CREATE TABLE IF NOT EXISTS user (
-      googleId PRIMARY KEY NOT NULL,
+      userId PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL
     );`)
@@ -23,7 +23,7 @@ database.open(config.DBSOURCE)
 
     db.run(`CREATE TABLE IF NOT EXISTS transactions (
       transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId references user(googleId) NOT NULL,
+      userId references user(userId) NOT NULL,
       date INTEGER,
       amount REAL,
       memo TEXT,
@@ -47,7 +47,7 @@ database.open(config.DBSOURCE)
   });
 
 module.exports.createUser = async function (values) {
-  const sql = 'INSERT INTO user (googleId, name, email) VALUES (?, ?, ?);';
+  const sql = 'INSERT INTO user (userId, name, email) VALUES (?, ?, ?);';
   const response = await db.run(sql, values)
     .then(() => {
       return null;
@@ -70,10 +70,10 @@ module.exports.getAllUsers = async function () {
   return response;
 };
 
-module.exports.getUserById = async function (googleId) {
+module.exports.getUserById = async function (userId) {
   const sql = `
   SELECT * FROM user
-  WHERE googleId = ${googleId};`;
+  WHERE userId = ${userId};`;
   const response = await db.get(sql)
     .then(row => {
       return { failed: false, context: row };
@@ -89,7 +89,7 @@ module.exports.updateUser = async function (values) {
   UPDATE user SET
   name = COALESCE(?, name),
   email = COALESCE(?, email)
-  WHERE googleId = ${values[0]};`;
+  WHERE userId = ${values[0]};`;
 
   const response = await db.run(sql, [values[1], values[2]])
     .then(() => {
@@ -101,8 +101,8 @@ module.exports.updateUser = async function (values) {
   return response;
 };
 
-module.exports.deleteUser = async function (googleId) {
-  const sql = `DELETE FROM user WHERE googleId = ${googleId};`;
+module.exports.deleteUser = async function (userId) {
+  const sql = `DELETE FROM user WHERE userId = ${userId};`;
   const response = await db.run(sql)
     .then(() => {
       return null;
@@ -191,7 +191,7 @@ X CREATE transaction
 X RETRIEVE all transactions
 X RETRIEVE transaction
 X RETRIEVE all transactions from a user
-RETRIEVE transactions from a user between two dates
+X RETRIEVE transactions from a user between two dates
 UPDATE transaction
 DELETE transaction
 */

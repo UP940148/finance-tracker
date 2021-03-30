@@ -51,17 +51,20 @@ app.get('/favicon/', (req, res) => {
 });
 
 app.post('/user/', jsonParser, async (req, res) => {
-  const data = [req.body.googleId, req.body.name, req.body.email];
+  const data = [req.body.userId, req.body.name, req.body.email];
   const err = await db.createUser(data);
+  // If an error occured, return 400
   if (err) {
     res.status(400).json({ error: err.message });
     return;
   }
+  // If user was successfully created, return 201
   res.status(201).json({ success: true });
 });
 
 app.get('/users/', async (req, res) => {
   const response = await db.getAllUsers();
+  // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
       success: false,
@@ -69,20 +72,23 @@ app.get('/users/', async (req, res) => {
     });
     return;
   }
-  if (!response.context) {
-    res.status(404).json({
+  // If no users exist, return 204
+  if (response.context.length === 0) {
+    res.status(204).json({
       success: false,
     });
     return;
   }
+  // If success return 200
   res.status(200).json({
     success: true,
     data: response.context,
   });
 });
 
-app.get('/user/:googleId/', async (req, res) => {
-  const response = await db.getUserById(req.params.googleId);
+app.get('/user/:userId/', async (req, res) => {
+  const response = await db.getUserById(req.params.userId);
+  // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
       success: false,
@@ -90,34 +96,78 @@ app.get('/user/:googleId/', async (req, res) => {
     });
     return;
   }
+  // If user not found, return 404
   if (!response.context) {
     res.status(404).json({
       success: false,
     });
     return;
   }
+  // If success, return 200
   res.status(200).json({
     success: true,
     data: response.context,
   });
 });
 
-app.patch('/user/:googleId/', jsonParser, async (req, res) => {
-  const data = [req.params.googleId, req.body.name, req.body.email];
+app.patch('/user/:userId/', jsonParser, async (req, res) => {
+  // Check if the user exists
+  const response = await db.getUserById(req.params.userId);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If user not found, return 404
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If user exists, proceed with update
+  const data = [req.params.userId, req.body.name, req.body.email];
   const err = await db.updateUser(data);
+  // If an error occured, return 400
   if (err) {
     res.status(400).json({ error: err.message });
     return;
   }
+  // If user was successfully updated, return 201
   res.status(201).json({ success: true });
 });
 
-app.delete('/user/:googleId/', async (req, res) => {
-  const err = await db.deleteUser(req.params.googleId);
+app.delete('/user/:userId/', async (req, res) => {
+  // Check if the user exists
+  const response = await db.getUserById(req.params.userId);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If user not found, return 404
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If user exists, proceed with delete
+  const err = await db.deleteUser(req.params.userId);
+  // If an error occured, return 400
   if (err) {
     res.status(400).json({ error: err.message });
     return;
   }
+  // If user was successfully deleted, return 200
   res.status(200).json({ success: true });
 });
 
@@ -174,7 +224,9 @@ app.get('/transaction/:transactionId/', async (req, res) => {
 });
 
 app.get('/user/:userId/transactions/', async (req, res) => {
-  const response = await db.getUserTransactions(req.params.userId);
+  // First check if userId is assosciated with a stored account
+  let response = await db.getUserById(req.params.userId);
+  // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
       success: false,
@@ -182,12 +234,32 @@ app.get('/user/:userId/transactions/', async (req, res) => {
     });
     return;
   }
+  // If the user doesn't exist, return 404 not found
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If the user exists, retrieve requested transactions
+  response = await db.getUserTransactions(req.params.userId);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If no transactions found, return 204
   if (response.context.length === 0) {
     res.status(204).json({
       success: false,
     });
     return;
   }
+  // If success, return 200
   res.status(200).json({
     success: true,
     data: response.context,
@@ -195,7 +267,9 @@ app.get('/user/:userId/transactions/', async (req, res) => {
 });
 
 app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
-  const response = await db.getUserTransactionsBetweenDates(req.params.userId, req.params.startDate, req.params.endDate);
+  // First check if userId is assosciated with a stored account
+  let response = await db.getUserById(req.params.userId);
+  // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
       success: false,
@@ -203,12 +277,32 @@ app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
     });
     return;
   }
+  // If the user doesn't exist, return 404 not found
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+
+  // If the user exists, retrieve requested transactions
+  response = await db.getUserTransactionsBetweenDates(req.params.userId, req.params.startDate, req.params.endDate);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If no transactions exist, return 204
   if (response.context.length === 0) {
     res.status(204).json({
       success: true,
     });
     return;
   }
+  // If success, return 200
   res.status(200).json({
     success: true,
     data: response.context,
