@@ -22,6 +22,7 @@ database.open(config.DBSOURCE)
       });
 
     db.run(`CREATE TABLE IF NOT EXISTS transactions (
+      transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
       userId references user(googleId) NOT NULL,
       date INTEGER,
       amount REAL,
@@ -112,16 +113,85 @@ module.exports.deleteUser = async function (googleId) {
   return response;
 };
 
-/*
-CREATE user
-RETRIEVE all users
-RETRIEVE user
-UPDATE user
-DELETE user
+module.exports.createTransaction = async function (values) {
+  const sql = 'INSERT INTO transactions (userId, date, amount, memo, address, payee, category, subcategory) VALUES (?, ?, ?, ?, ?, ?, ?, ?);';
+  const response = await db.run(sql, values)
+    .then(() => {
+      return null;
+    })
+    .catch(err => {
+      return err;
+    });
+  return response;
+};
 
-CREATE transaction
-RETRIEVE all transactions
-RETRIEVE transactions between two dates
+module.exports.getAllTransactions = async function () {
+  const sql = 'SELECT * FROM transactions;';
+  const response = await db.all(sql)
+    .then(rows => {
+      return { failed: false, context: rows };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
+module.exports.getTransactionById = async function (transactionId) {
+  const sql = `
+  SELECT * FROM transactions
+  WHERE transactionId = ${transactionId};`;
+  const response = await db.get(sql)
+    .then(row => {
+      return { failed: false, context: row };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
+module.exports.getUserTransactions = async function (userId) {
+  const sql = `
+  SELECT * FROM transactions
+  WHERE userId = ${userId};`;
+  const response = await db.all(sql)
+    .then(rows => {
+      return { failed: false, context: rows };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
+module.exports.getUserTransactionsBetweenDates = async function (userId, startDate, endDate) {
+  const sql = `
+  SELECT * FROM transactions
+  WHERE userId = ${userId}
+  AND date BETWEEN ${startDate} AND ${endDate};`;
+  const response = await db.all(sql)
+    .then(rows => {
+      return { failed: false, context: rows };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
+/*
+X CREATE user
+X RETRIEVE all users
+X RETRIEVE user
+X UPDATE user
+X DELETE user
+
+X CREATE transaction
+X RETRIEVE all transactions
+X RETRIEVE transaction
+X RETRIEVE all transactions from a user
+RETRIEVE transactions from a user between two dates
 UPDATE transaction
 DELETE transaction
 */
