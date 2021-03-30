@@ -50,6 +50,8 @@ app.get('/favicon/', (req, res) => {
   res.status(200).sendFile(config.www + 'images/Wallet-icon.png');
 });
 
+// --- USER API Routes ---
+
 app.post('/user/', jsonParser, async (req, res) => {
   const data = [req.body.userId, req.body.name, req.body.email];
   const err = await db.createUser(data);
@@ -170,6 +172,8 @@ app.delete('/user/:userId/', async (req, res) => {
   // If user was successfully deleted, return 200
   res.status(200).json({ success: true });
 });
+
+// --- TRANSACTION API Routes ---
 
 app.post('/transaction/', jsonParser, async (req, res) => {
   const data = [req.body.userId, req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory];

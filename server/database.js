@@ -227,5 +227,5 @@ TESTED X RETRIEVE transaction
 TESTED X RETRIEVE all transactions from a user
 TESTED X RETRIEVE transactions from a user between two dates
 TESTED X UPDATE transaction
-X DELETE transaction
+TESTED X DELETE transaction
 */
