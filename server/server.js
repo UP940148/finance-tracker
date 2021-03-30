@@ -81,7 +81,7 @@ app.get('/users/', async (req, res) => {
   });
 });
 
-app.get('/user/:googleId', async (req, res) => {
+app.get('/user/:googleId/', async (req, res) => {
   const response = await db.getUserById(req.params.googleId);
   if (response.failed) {
     res.status(400).json({
@@ -102,7 +102,7 @@ app.get('/user/:googleId', async (req, res) => {
   });
 });
 
-app.patch('/user/:googleId', jsonParser, async (req, res) => {
+app.patch('/user/:googleId/', jsonParser, async (req, res) => {
   const data = [req.params.googleId, req.body.name, req.body.email];
   const err = await db.updateUser(data);
   if (err) {
@@ -112,13 +112,107 @@ app.patch('/user/:googleId', jsonParser, async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-app.delete('/user/:googleId', async (req, res) => {
+app.delete('/user/:googleId/', async (req, res) => {
   const err = await db.deleteUser(req.params.googleId);
   if (err) {
     res.status(400).json({ error: err.message });
     return;
   }
   res.status(200).json({ success: true });
+});
+
+app.post('/transaction/', jsonParser, async (req, res) => {
+  const data = [req.body.userId, req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory];
+  const err = await db.createTransaction(data);
+  if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  res.status(201).json({ success: true });
+});
+
+app.get('/transactions/', async (req, res) => {
+  const response = await db.getAllTransactions();
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
+});
+
+app.get('/transaction/:transactionId/', async (req, res) => {
+  const response = await db.getTransactionById(req.params.transactionId);
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  if (!response.context) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
+});
+
+app.get('/user/:userId/transactions/', async (req, res) => {
+  const response = await db.getUserTransactions(req.params.userId);
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  if (response.context.length === 0) {
+    res.status(204).json({
+      success: false,
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
+});
+
+app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
+  const response = await db.getUserTransactionsBetweenDates(req.params.userId, req.params.startDate, req.params.endDate);
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  if (response.context.length === 0) {
+    res.status(204).json({
+      success: true,
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
 });
 
 // Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
