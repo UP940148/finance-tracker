@@ -209,7 +209,7 @@ p, h1, h2, h3, h4, input, a, button, label, div, li, ul, textarea {
     border-radius: 10px;
 }
 
-.dash-icon h2, hr, p, div{
+.dash-icon h2, hr, p {
     margin: .5rem;
 }
 
