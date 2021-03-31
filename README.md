@@ -24,6 +24,18 @@ Server running on port XXXX!
 ```
 The application can then be accessed by directing your browser to `localhost:XXXX` where `XXXX` is the port number specified in the messages above (Defaults to port 8080)
 
+## `.qif` File
+
+Quicken Interchange Format uses reserved characters for the start of each new line in the file
+
+- `D` - Date in form `DD/MM/YYYY`
+- `T` - Amount. +ve value for money in, -ve value for money out
+- `M` - Memo (Transaction note)
+- `A` - Address. Each subsequent line starting with A represents a new line in the address
+- `P` - Payee
+- `L` - Category in the form `LCategory:Subcategory`
+- `^` - End of transaction
+
 ## API Routes
 
 ### HTTP response status codes
@@ -34,6 +46,7 @@ Code definitions taken from https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 - `201` - The request has succeeded and the new resource has been created
 - `204` - There is no content to send for this request, but the headers may be useful
 - `400` - Something went wrong
+- `401` - Unauthorized
 - `404` - The requested resource could not be found
 
 ### User Routes
