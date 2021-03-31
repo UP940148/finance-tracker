@@ -310,7 +310,7 @@ app.get('/user/transactions/:startDate/:endDate/', async (req, res) => {
   }
 
   // If the user exists, retrieve requested transactions
-  response = await db.getUserTransactionsBetweenDates(parseInt(req.user.id), req.params.startDate, req.params.endDate);
+  response = await db.getUserTransactionsBetweenDates(parseInt(req.user.id), parseInt(req.params.startDate), parseInt(req.params.endDate));
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -408,6 +408,30 @@ app.delete('/transaction/:transactionId', async (req, res) => {
   res.status(200).json({ success: true });
 });
 
+app.get('/categories/', async (req, res) => {
+  const response = await db.getUserCategories(req.user.id);
+  // If an error occured, return 400
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  // If no categories found, return 204
+  if (!response.context) {
+    res.status(204).json({
+      success: false,
+    });
+    return;
+  }
+  // If success, return 200
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
+});
+
 // --- DOCUMENT UPLOAD ---
 
 app.post('/upload-statement/', uploader.single('statement'), async (req, res) => {
@@ -426,7 +450,7 @@ app.post('/upload-statement/', uploader.single('statement'), async (req, res) =>
           transaction.address = transaction.address.join(', ');
         }
         // Add entry to database
-        const data = [req.user.id, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
+        const data = [parseInt(req.user.id), transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
         const err = await db.createTransaction(data);
         if (err) {
           errors.append(err);
