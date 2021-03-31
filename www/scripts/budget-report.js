@@ -1,8 +1,7 @@
 let element = {};
 
-let ctx = document.querySelector('#budget-graph').getContext('2d');
-let labels = [];
-let colour  = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
+
+// this is dummy data used for testing purposes. This data would need to be passed on from the database. It needs to be formatted as an array of some kind and in the correct order matching the labels array. The values need to be added up for the month before being added to the array
 
 let data = {
     jan: [1,2,3,4,5,6],
@@ -19,11 +18,9 @@ let data = {
     dec: [123,432,454,232,123,43]
 }
 
+let ctx = document.querySelector('#budget-graph').getContext('2d');
+let colour  = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
 
-// DUMMY DATA
-let purchaseSums = [1,2,3,4,5,6];
-let purchaseSums2 = [121,32,345,654,234,232];
-let purchaseSums3 = [111,222,323,21,343,123];
 
 labels = [
     `Utility Bills `,
@@ -39,7 +36,7 @@ let myChart = new Chart(ctx, {
     data: {
         labels: labels,
         datasets: [{
-            data: [0,0,0,0,0,0],
+            data: [1,1,1,1,1,1],
             backgroundColor: colour
         }],
     },
@@ -47,15 +44,37 @@ let myChart = new Chart(ctx, {
         responsive: true,
         legend: {
           position: 'bottom'
-        }
+        },
+        tooltips: true
     }
 })
 
+function yearlySpend(arr) {
+    let total = 0;
+    for (let i = 0; i < arr.length; i++) {
+        total += arr[i]
+        console.log(total)     
+    }
+
+    return total;
+}
+
+
+
 
 function updateChart (piChartData) {
-    console.log(myChart.data.datasets[0].data)
     myChart.data.datasets[0].data = piChartData;
+    myChart.data.labels = [
+        `Utility Bills - £${piChartData[0]}`,
+        `Food & Drink - £${piChartData[1]}`,
+        `Leisure - £${piChartData[2]}`,
+        `Health - £${piChartData[3]}`,
+        `Travel - £${piChartData[4]}`,
+        `Other - £${piChartData[5]}`
+    ]
     myChart.update();
+
+    element.totalSpend.textContent = `Your Monthly Spend Is - £${yearlySpend(piChartData)}`
     
 }
 
@@ -64,6 +83,54 @@ function selectMonth(arr){
         element.months[i].classList.remove('active-month'); 
     }
 } 
+
+
+
+let ctx2 = document.querySelector('#yearly-spend').getContext('2d');
+
+
+label = [
+    `Utility Bills `,
+    `Food & Drink `,
+    `Leisure`,
+    `Health `,
+    `Travel `,
+    `Other `
+]
+
+let myChart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+            data: [
+                yearlySpend(data.jan),
+                yearlySpend(data.feb),
+                yearlySpend(data.mar),
+                yearlySpend(data.apr),
+                yearlySpend(data.may),
+                yearlySpend(data.jun),
+                yearlySpend(data.jul),
+                yearlySpend(data.aug),
+                yearlySpend(data.sep),
+                yearlySpend(data.oct),
+                yearlySpend(data.nov),
+                yearlySpend(data.dec),
+            ],
+            backgroundColor: '#29a718',
+            lineTension : 0,
+            fill: false
+        }],
+    },
+    options: {
+        responsive: true,
+        legend: {
+          position: 'bottom'
+        }
+        
+    },
+    
+})
 
 
 function domElements() {
@@ -82,6 +149,7 @@ function domElements() {
     element.nov = document.querySelector('#november');
     element.dec = document.querySelector('#december');
 
+    element.totalSpend = document.querySelector('#total-spend');
 }
 
 
