@@ -5,8 +5,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const googleAuth = require('simple-google-openid');
 const auth = googleAuth(config.OAUTH_CLIENT_ID);
+
 const multer = require('multer');
 const qif2json = require('qif2json');
+const fs = require('fs');
+const { promisify } = require('util');
+const renameAsync = promisify(fs.rename);
 
 const app = express();
 
@@ -42,9 +46,7 @@ app.listen(config.PORT || 8080, (err) => {
   }
 });
 
-// qif2json.parseFile('./test.qif', function(err, qifData) {
-//   console.log(err || qifData);
-// })
+
 
 app.get('/favicon/', (req, res) => {
   res.status(200).sendFile(config.www + 'images/Wallet-icon.png');
@@ -374,7 +376,43 @@ app.delete('/transaction/:transactionId', async (req, res) => {
   res.status(200).json({ success: true });
 });
 
+// --- DOCUMENT UPLOAD ---
+
+app.post('/upload-statement/:userId', uploader.single('statement'), async (req, res) => {
+  const errors = [];
+  // Convert file to JSON array
+  await qif2json.parseFile(req.file.path, async (err, qifData) => {
+    if (err) {
+      res.status(400);
+    } else {
+      // Format each transaction ready for the database
+      await qifData.transactions.forEach(async (transaction) => {
+        // Convert date to Unix Timestamp
+        transaction.date = qifToUnixTime(transaction.date);
+        // Convert address to single string
+        if (transaction.address) {
+          transaction.address = transaction.address.join(', ');
+        }
+        console.log(transaction);
+        // Add entry to database
+        const data = [req.params.userId, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
+        const err = await db.createTransaction(data);
+        if (err) {
+          errors.append(err);
+        }
+      });
+    }
+  });
+  res.status(201).json({ success: true });
+});
+
 // Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
 app.get('*', (req, res) => {
   res.status(404).sendFile(config.www + 'welcomePage.html');
 });
+
+function qifToUnixTime(date) {
+  const formattedDate = date.split(/[^\d+]/);
+  const datum = new Date(Date.UTC(formattedDate[0], formattedDate[1] - 1, formattedDate[2], formattedDate[3], formattedDate[4], formattedDate[5]));
+  return datum.getTime();
+}
