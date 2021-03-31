@@ -38,9 +38,9 @@ try {
 app.use('/', express.static(config.www, { index: 'welcomePage.html', extension: ['HTML'] }));
 
 // Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
-app.use('/', (req, res) => {
-  res.status(404).sendFile(config.www + '404-not-found.html');
-});
+// app.use('/', (req, res) => {
+//   res.status(404).sendFile(config.www + '404-not-found.html');
+// });
 
 // Set up web server on port specified in config file. Default to port 8080 if there's an error with config.PORT value
 app.listen(config.PORT || 8080, (err) => {
