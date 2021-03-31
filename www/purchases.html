@@ -32,12 +32,16 @@
     <div class="main-subpage">
       <h1 class="content-title">Purchases</h1>
       <hr>
-      <div class="subpage-content purchases">
-
-
+      <div class="subpage-content purchases" id='subpageContent'>
+        <p>Select start date: </p>
+        <input type='date' id='startDate'>
+        <p>Select end date: </p>
+        <input type='date' id='endDate'>
+        <div id=purchases></div>
       </div>
 
     </div>
   </body>
   <script src='/scripts/google-auth.js'></script>
+  <script src='/scripts/purchases.js'></script>
 </html>
