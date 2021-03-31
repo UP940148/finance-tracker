@@ -5,13 +5,17 @@
     <title>Welcome!</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="/favicon"/>
+    <!-- this loads google libraries -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content='30685749470-rd1biepfdvcmtpigdahj4ui4r45hnnua.apps.googleusercontent.com'>
   </head>
 
   <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" hidden=true></div>
 
     <!-- NAVIGATION AND HEADER BAR -->
     <header class="header">
-      <h1 class="page-title"><a href="welcomePage.html">Student<span id="title-p2" >Budgets</span></a></h1>
+      <h1 class="page-title"><a href="/">Student<span id="title-p2" >Budgets</span></a></h1>
       <nav>
           <ul class="nav-links">
               <li class="nav-link"><a href="/dashboard.html">Dashboard</a></li>
@@ -20,7 +24,7 @@
           </ul>
       </nav>
       <ul class="nav-links">
-        <li class="nav-link"><a href="/signInPage.html">Sign Out</a></li>
+        <li class="nav-link" onclick="signOut();"><a>Sign Out</a></li>
       </ul>
     </header>
 
@@ -28,11 +32,43 @@
     <div class="main-subpage">
       <h1 class="content-title">Budget Report</h1>
       <hr>
-      <div class="subpage-content budget-report">
+      <div class="subpage-content">
+        <div class="saving-tips-intro">
+          <p>Enim nec dui nunc mattis enim ut tellus elementum sagittis. Scelerisque viverra mauris in aliquam sem fringilla ut morbi. Id donec ultrices tincidunt arcu non sodales neque. Id volutpat lacus laoreet non curabitur gravida arcu. Urna nec tincidunt praesent semper feugiat. Tempus quam pellentesque nec nam aliquam sem. </p>
+        </div>
+
+        <div class="budget-report">
+          <div class="month-option">
+            <div class="month default-button" id="january">Jan</div>
+            <div class="month default-button" id="february">Feb</div>
+            <div class="month default-button" id="march">Mar</div>
+            <div class="month default-button" id="april">Apr</div>
+            <div class="month default-button" id="may">May</div>
+            <div class="month default-button" id="june">Jun</div>
+            <div class="month default-button" id="july">Jul</div>
+            <div class="month default-button" id="august">Aug</div>
+            <div class="month default-button" id="september">Sep</div>
+            <div class="month default-button" id="october">Oct</div>
+            <div class="month default-button" id="november">Nov</div>
+            <div class="month default-button" id="december">Dec</div>
+          </div>
+          
+          <canvas id="budget-graph">
+
+          </canvas>
+
+        </div>
+
 
 
       </div>
 
     </div>
   </body>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <script src="scripts/budget-report.js"></script>
+
+  <script src='/scripts/google-auth.js'></script>
 </html>

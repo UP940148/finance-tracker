@@ -209,7 +209,7 @@ p, h1, h2, h3, h4, input, a, button, label, div, li, ul, textarea {
     border-radius: 10px;
 }
 
-.dash-icon h2, hr, p, div{
+.dash-icon h2, hr, p {
     margin: .5rem;
 }
 
@@ -371,8 +371,45 @@ hr {
     margin: 0% 25% ;
 }
 
+/* BUDGET REPORT */
 
+.budget-report {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 1rem;
+    padding: 1rem;
+    text-align: center;
+}
 
+.month-option {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.month-option div {
+    margin: .2rem 1rem;
+    width: 20%;
+}
+
+.month-option:hover {
+    
+}
+.month {
+    padding: .5rem;
+    border: 1px solid;
+    border-radius: 90px;
+
+}
+
+.month:hover {
+    cursor: pointer;
+}
+
+.active-month {
+    background-color: 29a71852;
+
+}
 
 
 
@@ -435,4 +472,29 @@ hr {
     .tip-icon img {
         margin-top: .5rem;
     }
+}
+
+.content-404 {
+  text-align: center;
+}
+
+.content-404 > h1 {
+  font-size: 500%;
+}
+
+.content-404 > h2 {
+  font-size: 250%;
+}
+
+.content-404 > h3 {
+  font-size: 200%;
+}
+
+.content-404 > h3 > a {
+  color: #3366BB;
+  text-decoration: underline;
+}
+
+.green-colour {
+  color: #29a71898;
 }
