@@ -436,3 +436,28 @@ hr {
         margin-top: .5rem;
     }
 }
+
+.content-404 {
+  text-align: center;
+}
+
+.content-404 > h1 {
+  font-size: 500%;
+}
+
+.content-404 > h2 {
+  font-size: 250%;
+}
+
+.content-404 > h3 {
+  font-size: 200%;
+}
+
+.content-404 > h3 > a {
+  color: #3366BB;
+  text-decoration: underline;
+}
+
+.green-colour {
+  color: #29a71898;
+}

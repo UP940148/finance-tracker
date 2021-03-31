@@ -37,6 +37,11 @@ try {
 
 app.use('/', express.static(config.www, { index: 'welcomePage.html', extension: ['HTML'] }));
 
+// Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
+app.use('/', (req, res) => {
+  res.status(404).sendFile(config.www + '404-not-found.html');
+});
+
 // Set up web server on port specified in config file. Default to port 8080 if there's an error with config.PORT value
 app.listen(config.PORT || 8080, (err) => {
   if (!err) {
@@ -435,10 +440,6 @@ app.post('/upload-statement/', uploader.single('statement'), async (req, res) =>
   res.status(201).json({ success: true });
 });
 
-// Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
-app.get('*', (req, res) => {
-  res.status(404).sendFile(config.www + 'welcomePage.html');
-});
 
 function qifToUnixTime(date) {
   const formattedDate = date.split(/[^\d+]/);
