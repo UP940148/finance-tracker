@@ -214,6 +214,37 @@ module.exports.deleteTransaction = async function (transactionId) {
   return response;
 };
 
+module.exports.getUserCategories = async function (userId) {
+  const sql = `
+  SELECT DISTINCT category
+  FROM transactions
+  WHERE userId = ${userId};`;
+  const response = await db.all(sql)
+    .then(rows => {
+      return { failed: false, context: rows };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
+module.exports.getSubCategories = async function (userId, category) {
+  const sql = `
+  SELECT DISTINCT subcategory
+  FROM transactions
+  WHERE userId = ${userId}
+  AND category = ${category};`;
+  const response = await db.all(sql)
+    .then(rows => {
+      return { failed: false, context: rows };
+    })
+    .catch(err => {
+      return { failed: true, context: err };
+    });
+  return response;
+};
+
 /*
 TESTED X CREATE user
 TESTED X RETRIEVE all users
