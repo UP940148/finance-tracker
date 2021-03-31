@@ -7,12 +7,12 @@ const googleAuth = require('simple-google-openid');
 const auth = googleAuth(config.OAUTH_CLIENT_ID);
 
 const multer = require('multer');
-const qif2json = require('qif2json');
 const fs = require('fs');
-const { promisify } = require('util');
-const renameAsync = promisify(fs.rename);
+const qif2json = require('qif2json');
 
 const app = express();
+
+app.use(auth);
 
 const uploader = multer({
   dest: config.uploads,
@@ -37,6 +37,11 @@ try {
 
 app.use('/', express.static(config.www, { index: 'welcomePage.html', extension: ['HTML'] }));
 
+// Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
+app.use('/', (req, res) => {
+  res.status(404).sendFile(config.www + '404-not-found.html');
+});
+
 // Set up web server on port specified in config file. Default to port 8080 if there's an error with config.PORT value
 app.listen(config.PORT || 8080, (err) => {
   if (!err) {
@@ -47,25 +52,11 @@ app.listen(config.PORT || 8080, (err) => {
 });
 
 
-
 app.get('/favicon/', (req, res) => {
   res.status(200).sendFile(config.www + 'images/Wallet-icon.png');
 });
 
-// --- USER API Routes ---
-
-app.post('/user/', jsonParser, async (req, res) => {
-  const data = [req.body.userId, req.body.name, req.body.email];
-  const err = await db.createUser(data);
-  // If an error occured, return 400
-  if (err) {
-    res.status(400).json({ error: err.message });
-    return;
-  }
-  // If user was successfully created, return 201
-  res.status(201).json({ success: true });
-});
-
+// --- ADMIN API ROUTES ---
 app.get('/users/', async (req, res) => {
   const response = await db.getAllUsers();
   // If an error occured, return 400
@@ -90,8 +81,46 @@ app.get('/users/', async (req, res) => {
   });
 });
 
-app.get('/user/:userId/', async (req, res) => {
-  const response = await db.getUserById(req.params.userId);
+app.get('/transactions/', async (req, res) => {
+  const response = await db.getAllTransactions();
+  if (response.failed) {
+    res.status(400).json({
+      success: false,
+      data: response.context.message,
+    });
+    return;
+  }
+  if (response.context.length === 0) {
+    res.status(204).json({
+      success: false,
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+    data: response.context,
+  });
+});
+
+// All API routes following this point will require Google Authentication
+app.use('/', googleAuth.guardMiddleware());
+
+// --- USER API Routes ---
+
+app.post('/user/', jsonParser, async (req, res) => {
+  const data = [parseInt(req.user.id), req.body.name, req.body.email];
+  const err = await db.createUser(data);
+  // If an error occured, return 400
+  if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  // If user was successfully created, return 201
+  res.status(201).json({ success: true });
+});
+
+app.get('/user/', async (req, res) => {
+  const response = await db.getUserById(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -114,9 +143,9 @@ app.get('/user/:userId/', async (req, res) => {
   });
 });
 
-app.patch('/user/:userId/', jsonParser, async (req, res) => {
+app.patch('/user/', jsonParser, async (req, res) => {
   // Check if the user exists
-  const response = await db.getUserById(req.params.userId);
+  const response = await db.getUserById(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -134,7 +163,7 @@ app.patch('/user/:userId/', jsonParser, async (req, res) => {
   }
 
   // If user exists, proceed with update
-  const data = [req.body.name, req.body.email, parseInt(req.params.userId)];
+  const data = [req.body.name, req.body.email, parseInt(req.user.id)];
   const err = await db.updateUser(data);
   // If an error occured, return 400
   if (err) {
@@ -145,9 +174,9 @@ app.patch('/user/:userId/', jsonParser, async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-app.delete('/user/:userId/', async (req, res) => {
+app.delete('/user/', async (req, res) => {
   // Check if the user exists
-  const response = await db.getUserById(req.params.userId);
+  const response = await db.getUserById(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -165,7 +194,7 @@ app.delete('/user/:userId/', async (req, res) => {
   }
 
   // If user exists, proceed with delete
-  const err = await db.deleteUser(req.params.userId);
+  const err = await db.deleteUser(req.user.id);
   // If an error occured, return 400
   if (err) {
     res.status(400).json({ error: err.message });
@@ -178,7 +207,7 @@ app.delete('/user/:userId/', async (req, res) => {
 // --- TRANSACTION API Routes ---
 
 app.post('/transaction/', jsonParser, async (req, res) => {
-  const data = [req.body.userId, req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory];
+  const data = [req.user.id, req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory];
   const err = await db.createTransaction(data);
   if (err) {
     res.status(400).json({ error: err.message });
@@ -187,29 +216,9 @@ app.post('/transaction/', jsonParser, async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-app.get('/transactions/', async (req, res) => {
-  const response = await db.getAllTransactions();
-  if (response.failed) {
-    res.status(400).json({
-      success: false,
-      data: response.context.message,
-    });
-    return;
-  }
-  if (response.context.length === 0) {
-    res.status(204).json({
-      success: false,
-    });
-    return;
-  }
-  res.status(200).json({
-    success: true,
-    data: response.context,
-  });
-});
-
 app.get('/transaction/:transactionId/', async (req, res) => {
   const response = await db.getTransactionById(req.params.transactionId);
+  // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
       success: false,
@@ -217,21 +226,30 @@ app.get('/transaction/:transactionId/', async (req, res) => {
     });
     return;
   }
+  // If the transaction wasn't found, return 404
   if (!response.context) {
     res.status(404).json({
       success: false,
     });
     return;
   }
+  // If the user accessing is not the one linked to the transaction, return 401
+  if (response.context.userId !== req.user.id) {
+    res.status(401).json({
+      success: false,
+    });
+    return;
+  }
+  // If success, return 200
   res.status(200).json({
     success: true,
     data: response.context,
   });
 });
 
-app.get('/user/:userId/transactions/', async (req, res) => {
+app.get('/user/transactions/', async (req, res) => {
   // First check if userId is assosciated with a stored account
-  let response = await db.getUserById(req.params.userId);
+  let response = await db.getUserById(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -249,7 +267,7 @@ app.get('/user/:userId/transactions/', async (req, res) => {
   }
 
   // If the user exists, retrieve requested transactions
-  response = await db.getUserTransactions(req.params.userId);
+  response = await db.getUserTransactions(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -272,9 +290,9 @@ app.get('/user/:userId/transactions/', async (req, res) => {
   });
 });
 
-app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
+app.get('/user/transactions/:startDate/:endDate/', async (req, res) => {
   // First check if userId is assosciated with a stored account
-  let response = await db.getUserById(req.params.userId);
+  let response = await db.getUserById(req.user.id);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -292,7 +310,7 @@ app.get('/user/:userId/transactions/:startDate/:endDate/', async (req, res) => {
   }
 
   // If the user exists, retrieve requested transactions
-  response = await db.getUserTransactionsBetweenDates(req.params.userId, req.params.startDate, req.params.endDate);
+  response = await db.getUserTransactionsBetweenDates(parseInt(req.user.id), req.params.startDate, req.params.endDate);
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -333,6 +351,13 @@ app.patch('/transaction/:transactionId/', jsonParser, async (req, res) => {
     });
     return;
   }
+  // If the user accessing is not the one linked to the transaction, return 401
+  if (response.context.userId !== req.user.id) {
+    res.status(401).json({
+      success: false,
+    });
+    return;
+  }
 
   // If transaction exists, proceed with update
   const data = [req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory, req.params.transactionId];
@@ -364,6 +389,13 @@ app.delete('/transaction/:transactionId', async (req, res) => {
     });
     return;
   }
+  // If the user accessing is not the one linked to the transaction, return 401
+  if (response.context.userId !== req.user.id) {
+    res.status(401).json({
+      success: false,
+    });
+    return;
+  }
 
   // If transaction exists, proceed with delete
   const err = await db.deleteTransaction(req.params.transactionId);
@@ -378,7 +410,7 @@ app.delete('/transaction/:transactionId', async (req, res) => {
 
 // --- DOCUMENT UPLOAD ---
 
-app.post('/upload-statement/:userId', uploader.single('statement'), async (req, res) => {
+app.post('/upload-statement/', uploader.single('statement'), async (req, res) => {
   const errors = [];
   // Convert file to JSON array
   await qif2json.parseFile(req.file.path, async (err, qifData) => {
@@ -393,9 +425,8 @@ app.post('/upload-statement/:userId', uploader.single('statement'), async (req, 
         if (transaction.address) {
           transaction.address = transaction.address.join(', ');
         }
-        console.log(transaction);
         // Add entry to database
-        const data = [req.params.userId, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
+        const data = [req.user.id, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
         const err = await db.createTransaction(data);
         if (err) {
           errors.append(err);
@@ -403,13 +434,12 @@ app.post('/upload-statement/:userId', uploader.single('statement'), async (req, 
       });
     }
   });
+  fs.unlink(req.file.path, (err) => {
+    if (err) throw err;
+  });
   res.status(201).json({ success: true });
 });
 
-// Wildcard route. If any page/resource is requested that isn't valid, redirect to homepage
-app.get('*', (req, res) => {
-  res.status(404).sendFile(config.www + 'welcomePage.html');
-});
 
 function qifToUnixTime(date) {
   const formattedDate = date.split(/[^\d+]/);

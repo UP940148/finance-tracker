@@ -2,19 +2,24 @@
 
 <html>
   <head>
-    <title>Welcome!</title>
+    <title>Sign In!</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="/favicon"/>
+    <!-- this loads google libraries -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content='30685749470-rd1biepfdvcmtpigdahj4ui4r45hnnua.apps.googleusercontent.com'>
   </head>
 
   <body>
 
+
+
     <!-- NAVIGATION AND HEADER BAR -->
     <header class="header">
-      <h1 class="page-title"><a href="welcomePage.html">Student<span id="title-p2" >Budgets</span></a></h1>
+      <h1 class="page-title"><a href="/">Student<span id="title-p2" >Budgets</span></a></h1>
       <nav>
           <ul class="nav-links">
-            <a href="/welcomePage.html"><li class="nav-link ">Home</li></a>
+            <a href="/"><li class="nav-link ">Home</li></a>
             <a href="/about.html"><li class="nav-link">About</li></a>
             <a href="/contact.html"><li class="nav-link">Contact</li></a>
           </ul>
@@ -27,10 +32,14 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-subpage">
+
       <div class="subpage-content">
-        <h1>Sign In - <a href="Dashboard.html" style="color: blue;">Temporary Dashboard Link</a></h1>
+        <!-- this puts a sign-in button, and a sign-out link, in the page -->
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <!-- <h1>Sign In - <a href="Dashboard.html" style="color: blue;">Temporary Dashboard Link</a></h1> -->
       </div>
 
     </div>
   </body>
+  <script src='/scripts/google-auth.js'></script>
 </html>
