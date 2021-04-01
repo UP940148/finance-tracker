@@ -34,7 +34,7 @@ async function onSignIn(googleUser) {
   try {
     initPage();
   } catch {
-    
+
   }
   // Redirect to dashboard if on sign in page
   if (window.location.pathname === '/signInPage.html') {
