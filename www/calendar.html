@@ -33,28 +33,31 @@
       <h1 class="content-title">Calendar</h1>
       <hr>
       <div class="subpage-content calendar">
+        <div id="calendar">
+          <iframe src="https://calendar.google.com/calendar/embed?src=c_68p2ou1unf5kgkbecbl4oiutu4%40group.calendar.google.com&ctz=Europe%2FLondon" style="border: 0" width="700" height="600" frameborder="0" scrolling="no"></iframe>
+        </div>
+
+        <div>
+          <form action="http://localhost:8080/events" method="POST">
+            <br>
+            <label for="Bill Type">Bill Name</label><br>
+            <input type="Bill Name" type="text" placeholder="enter bill name">
+            <br>
+            <label for="Paid to">Paid to</label><br>
+            <input type="Account Name" type="text" placeholder="enter account name">
+            <br>
+            <label for="Amount Due">Amount Due</label><br>
+            <input type="debt" type="text" placeholder="enter amount to pay">
+            <br>
+            <label for="Due Date">Due Date</label><br>
+            <input type="Date" type="date" placeholder="due date">
+            <br>
+            <input type="Submit" value="Add bill" class="default-button">
+          </form>
+        </div>
 
 
       </div>
-
-      <iframe src="https://calendar.google.com/calendar/embed?src=c_68p2ou1unf5kgkbecbl4oiutu4%40group.calendar.google.com&ctz=Europe%2FLondon" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-
-      <form action="http://localhost:8080/events" method="POST">
-        <br><br>
-        <label for="Bill Type">Bill Name</label>
-        <input type="Bill Name" type="text" placeholder="enter bill name">
-        <br>
-        <label for="Paid to">Paid to</label>
-        <input type="Account Name" type="text" placeholder="enter account name">
-        <br>
-        <label for="Amount Due">Amount Due</label>
-        <input type="debt" type="text" placeholder="enter amount to pay">
-        <br>
-        <label for="Due Date">Due Date</label>
-        <input type="Date" type="date" placeholder="due date">
-        <br>
-        <input type="Submit" value="Add bill">
-      </form>
 
     </div>
   </body>

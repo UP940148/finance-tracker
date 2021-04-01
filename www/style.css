@@ -411,7 +411,37 @@ hr {
 
 }
 
+/* CALENDAR PAGE */
 
+.calendar {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap-reverse;
+}
+
+.calendar div {
+    margin: .5rem;
+    flex: 2;
+
+}
+
+.calendar input {
+    width: 100%;
+    border-radius: 10px;
+    padding: .5rem;
+    margin-bottom: 1rem;
+    margin-top: .25rem;
+}
+
+
+
+
+
+
+
+
+
+/* RESPONSIVE DESIGN */
 
 @media(max-width:1100px) {
     .main {
