@@ -139,7 +139,7 @@ module.exports.getAllTransactions = async function () {
 
 module.exports.getTransactionById = async function (transactionId) {
   const sql = `
-  SELECT * FROM transactions
+  SELECT date, amount, memo, address, payee, category, subcategory FROM transactions
   WHERE transactionId = ${transactionId};`;
   const response = await db.get(sql)
     .then(row => {
@@ -153,8 +153,9 @@ module.exports.getTransactionById = async function (transactionId) {
 
 module.exports.getUserTransactions = async function (userId) {
   const sql = `
-  SELECT * FROM transactions
-  WHERE userId = ${userId};`;
+  SELECT transactionId, date, amount, memo, address, payee, category, subcategory FROM transactions
+  WHERE userId = ${userId}
+  ORDER BY date DESC;`;
   const response = await db.all(sql)
     .then(rows => {
       return { failed: false, context: rows };
@@ -167,9 +168,10 @@ module.exports.getUserTransactions = async function (userId) {
 
 module.exports.getUserTransactionsBetweenDates = async function (userId, startDate, endDate) {
   const sql = `
-  SELECT * FROM transactions
+  SELECT transactionId, date, amount, memo, address, payee, category, subcategory FROM transactions
   WHERE userId = ${userId}
-  AND date BETWEEN ${startDate} AND ${endDate};`;
+  AND date BETWEEN ${startDate} AND ${endDate}
+  ORDER BY date DESC;`;
   const response = await db.all(sql)
     .then(rows => {
       return { failed: false, context: rows };
