@@ -393,7 +393,7 @@ hr {
 }
 
 .month-option:hover {
-    
+
 }
 .month {
     padding: .5rem;
@@ -497,4 +497,75 @@ hr {
 
 .green-colour {
   color: #29a71898;
+}
+
+.flex-container {
+  display: flex;
+}
+
+#dateSelector {
+  justify-content: space-evenly;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.transaction, #newPurchaseButton {
+  border-radius: 10px;
+  margin: 4px;
+  padding: 6px;
+  background-color: #ffffff;
+}
+
+#newPurchaseButton {
+  text-align: center;
+  background-color: #29a71898;
+  cursor: pointer;
+}
+
+.purchase-form {
+  justify-content: space-between;
+}
+
+#submitPurchaseButton {
+  cursor: pointer;
+  background-color: #29a71898;
+}
+
+#cancelPurchaseButton {
+  cursor: pointer;
+  background-color: #dc281898;
+}
+
+#purchases {
+  border-radius: 12px;
+  border: 1px solid black;
+  height: 58vh;
+  overflow-y: scroll;
+}
+
+.transaction-preview {
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.transaction-date {
+  width: 10%;
+  text-align: left;
+}
+.transaction-title {
+  width: 80%;
+  text-align: center;
+}
+.transaction-price {
+  width: 10%;
+  text-align: right;
+}
+
+.income {
+  color: green;
+}
+.expenditure {
+  color: red;
 }
