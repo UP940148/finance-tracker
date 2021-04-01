@@ -1,3 +1,4 @@
+//Object used to store all of the DOM elements
 let element = {};
 
 
@@ -18,26 +19,19 @@ let data = {
     dec: [123,432,454,232,123,43]
 }
 
+// Code to set up the doughnut chart that displays the users monthly spending breakdown.
 let ctx = document.querySelector('#budget-graph').getContext('2d');
 let colour  = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
 
 
-labels = [
-    `Utility Bills `,
-    `Food & Drink `,
-    `Leisure`,
-    `Health `,
-    `Travel `,
-    `Other `
-]
-
-let myChart = new Chart(ctx, {
+// Code used construct the doughnut chart.
+let monthlyReportChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: labels,
+        labels: labels = [`Utility Bills `,`Food & Drink `,`Leisure`,`Health `,`Travel `,`Other`],
         datasets: [{
             data: [1,1,1,1,1,1],
-            backgroundColor: colour
+            backgroundColor: ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11']
         }],
     },
     options: {
@@ -49,7 +43,8 @@ let myChart = new Chart(ctx, {
     }
 })
 
-function yearlySpend(arr) {
+//function used to calculate the monthly total spend based on the sum of all the categories
+function monthlySpend(arr) {
     let total = 0;
     for (let i = 0; i < arr.length; i++) {
         total += arr[i]
@@ -58,12 +53,10 @@ function yearlySpend(arr) {
     return total;
 }
 
-
-
-
+//Function used to update doughnut chart with correct figures dependant on which month is selected.
 function updateChart (piChartData) {
-    myChart.data.datasets[0].data = piChartData;
-    myChart.data.labels = [
+    monthlyReportChart.data.datasets[0].data = piChartData;
+    monthlyReportChart.data.labels = [
         `Utility Bills - £${piChartData[0]}`,
         `Food & Drink - £${piChartData[1]}`,
         `Leisure - £${piChartData[2]}`,
@@ -71,12 +64,13 @@ function updateChart (piChartData) {
         `Travel - £${piChartData[4]}`,
         `Other - £${piChartData[5]}`
     ]
-    myChart.update();
+    monthlyReportChart.update();
 
-    element.totalSpend.textContent = `Your Monthly Spend Is - £${yearlySpend(piChartData)}`
+    element.totalSpend.textContent = `Your Monthly Spend Is - £${monthlySpend(piChartData)}`
     
 }
 
+//Function used by event listeners to highlight the month that they are currently viewing the information for
 function selectMonth(arr){
     for (let i = 0; i < element.months.length; i++) {
         element.months[i].classList.remove('active-month'); 
@@ -84,37 +78,27 @@ function selectMonth(arr){
 } 
 
 
-
+// Code to set up the line chart that displays the users yearly spending breakdown.
 let ctx2 = document.querySelector('#yearly-spend').getContext('2d');
 
-
-label = [
-    `Utility Bills `,
-    `Food & Drink `,
-    `Leisure`,
-    `Health `,
-    `Travel `,
-    `Other `
-]
-
-let myChart2 = new Chart(ctx2, {
+let yearlyReportChart = new Chart(ctx2, {
     type: 'line',
     data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
             data: [
-                yearlySpend(data.jan),
-                yearlySpend(data.feb),
-                yearlySpend(data.mar),
-                yearlySpend(data.apr),
-                yearlySpend(data.may),
-                yearlySpend(data.jun),
-                yearlySpend(data.jul),
-                yearlySpend(data.aug),
-                yearlySpend(data.sep),
-                yearlySpend(data.oct),
-                yearlySpend(data.nov),
-                yearlySpend(data.dec),
+                monthlySpend(data.jan),
+                monthlySpend(data.feb),
+                monthlySpend(data.mar),
+                monthlySpend(data.apr),
+                monthlySpend(data.may),
+                monthlySpend(data.jun),
+                monthlySpend(data.jul),
+                monthlySpend(data.aug),
+                monthlySpend(data.sep),
+                monthlySpend(data.oct),
+                monthlySpend(data.nov),
+                monthlySpend(data.dec),
             ],
             backgroundColor: '#29a718',
             lineTension : 0,
@@ -132,6 +116,7 @@ let myChart2 = new Chart(ctx2, {
 })
 
 
+// Function used to get all of the DOM elements for the budget report page
 function domElements() {
     element.months = document.querySelectorAll('.month');
 
@@ -151,9 +136,7 @@ function domElements() {
     element.totalSpend = document.querySelector('#total-spend');
 }
 
-
-
-
+// Function used to prepare all of the event listeners used on the budget report page
 function prepareEventListeners() {
     for (let i = 0; i < element.months.length; i++) {
         element.months[i].addEventListener('click', selectMonth);
@@ -174,11 +157,12 @@ function prepareEventListeners() {
 }
 
 
-//PAGE LOADED FUNCTION 
+// Function to begin running the other functions once the page has been fully loaded.
 function pageLoaded(){
     domElements();
     prepareEventListeners();
     console.log('Page Loaded...');
 }
 
+// Event listener used to determine when the page has been fully loaded
 window.addEventListener('load', pageLoaded);
