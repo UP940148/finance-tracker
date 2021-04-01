@@ -132,3 +132,5 @@ dmypy.json
 node_modules/
 test.qif
 oldTest.qif
+authorize.txt
+token.json

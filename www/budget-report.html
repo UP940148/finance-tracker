@@ -33,6 +33,7 @@
       <h1 class="content-title">Budget Report</h1>
       <hr>
       <div class="subpage-content">
+
         <div class="saving-tips-intro">
           <p>This report reviews your finances over the couple of months and after reviewing your finances, it then displays your finances in the chart which varies based on the income and spending made. Furthermore the chart underneath shows how much has been spent monthly and shows if their spending has increase or decreased each month </p>
         </div>
@@ -40,6 +41,8 @@
         <div class="budget-report">
           <h2>Select a Month to View Your Spending</h2>
           <br>
+
+          <!-- Month selection grid -->
           <div class="month-option">
             <div class="month default-button" id="january">Jan</div>
             <div class="month default-button" id="february">Feb</div>
@@ -57,6 +60,7 @@
           <br>
           <h3 id="total-spend"></h3>
           <br>
+          <!-- Doughnut chart showing breakdown of monthly spending. -->
           <canvas id="budget-graph">
 
           </canvas>
@@ -64,6 +68,7 @@
             <br>
             <h2>Your Spending Throughout The Year</h2>
             <br>
+            <!-- Line chart showing breakdown of yearly spending -->
             <canvas id="yearly-spend" ></canvas>
           </div>
 

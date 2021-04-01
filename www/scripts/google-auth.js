@@ -31,6 +31,11 @@ async function onSignIn(googleUser) {
     const resData = await response.json();
     console.log(resData);
   }
+  try {
+    initPage();
+  } catch {
+    
+  }
   // Redirect to dashboard if on sign in page
   if (window.location.pathname === '/signInPage.html') {
     window.location.href = '/dashboard.html';

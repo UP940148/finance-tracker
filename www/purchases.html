@@ -33,11 +33,64 @@
       <h1 class="content-title">Purchases</h1>
       <hr>
       <div class="subpage-content purchases" id='subpageContent'>
-        <p>Select start date: </p>
-        <input type='date' id='startDate'>
-        <p>Select end date: </p>
-        <input type='date' id='endDate'>
-        <div id=purchases></div>
+        <div id='dateSelector' class='flex-container'>
+          <div>
+            <p>Select start date: </p>
+            <input type='date' id='startDate'>
+          </div>
+          <div>
+            <p>Select end date: </p>
+            <input type='date' id='endDate'>
+          </div>
+        </div>
+        <br>
+        <hr>
+        <h1 class='center-text' id='noTransactionsText'><br>No transactions found<br><br></h1>
+        <h1 class='center-text' id='somethingWrongText'><br>Something went wrong<br><br></h1>
+        <div id='purchasesContainer'>
+          <div id=purchases>
+        </div>
+          <div>
+          <div id='newPurchaseButton'>
+            <h2>+ Add New Purchase</h2>
+          </div>
+          <div id='newPurchaseTab'>
+            <div class='transaction flex-container purchase-form'>
+              <span class='center-text'>
+                <h3>*Payee:</h3>
+                <input type='text' id='newPayee'></input>
+              </span>
+
+              <span class='center-text'>
+                <h3>*Date:</h3>
+                <input type='date' id='newDate'></input>
+              </span>
+
+              <span class='center-text'>
+                <h3>*Amount:</h3>
+                <input type='number' step=0.01 id='newAmount'></input>
+              </span>
+
+              <span class='center-text'>
+                <h3>Memo:</h3>
+                <input type='text' id='newMemo'></input>
+              </span>
+
+              <span class='center-text'>
+                <h3>Address:</h3>
+                <input type='text' id='newAddress'></input>
+              </span>
+
+              <span class='center-text'>
+                <h3>Category:</h3>
+                <input type='text' id='newCategory'></input>
+              </span>
+            </div>
+            <div id='submitPurchaseButton' class='transaction center-text'><h3>Finish and submit</h3></div>
+            <div id='cancelPurchaseButton' class='transaction center-text'><h3>Cancel</h3></div>
+          </div>
+        </div>
+        </div>
       </div>
 
     </div>

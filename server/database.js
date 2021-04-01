@@ -73,7 +73,7 @@ module.exports.getAllUsers = async function () {
 module.exports.getUserById = async function (userId) {
   const sql = `
   SELECT * FROM user
-  WHERE userId = ${userId};`;
+  WHERE userId = "${userId}";`;
   const response = await db.get(sql)
     .then(row => {
       return { failed: false, context: row };
@@ -102,7 +102,7 @@ module.exports.updateUser = async function (values) {
 };
 
 module.exports.deleteUser = async function (userId) {
-  const sql = `DELETE FROM user WHERE userId = ${userId};`;
+  const sql = `DELETE FROM user WHERE userId = "${userId}";`;
   const response = await db.run(sql)
     .then(() => {
       return null;
@@ -139,7 +139,7 @@ module.exports.getAllTransactions = async function () {
 
 module.exports.getTransactionById = async function (transactionId) {
   const sql = `
-  SELECT date, amount, memo, address, payee, category, subcategory FROM transactions
+  SELECT * FROM transactions
   WHERE transactionId = ${transactionId};`;
   const response = await db.get(sql)
     .then(row => {
@@ -154,7 +154,7 @@ module.exports.getTransactionById = async function (transactionId) {
 module.exports.getUserTransactions = async function (userId) {
   const sql = `
   SELECT transactionId, date, amount, memo, address, payee, category, subcategory FROM transactions
-  WHERE userId = ${userId}
+  WHERE userId = "${userId}"
   ORDER BY date DESC;`;
   const response = await db.all(sql)
     .then(rows => {
@@ -169,7 +169,7 @@ module.exports.getUserTransactions = async function (userId) {
 module.exports.getUserTransactionsBetweenDates = async function (userId, startDate, endDate) {
   const sql = `
   SELECT transactionId, date, amount, memo, address, payee, category, subcategory FROM transactions
-  WHERE userId = ${userId}
+  WHERE userId = "${userId}"
   AND date BETWEEN ${startDate} AND ${endDate}
   ORDER BY date DESC;`;
   const response = await db.all(sql)
@@ -220,7 +220,7 @@ module.exports.getUserCategories = async function (userId) {
   const sql = `
   SELECT DISTINCT category
   FROM transactions
-  WHERE userId = ${userId};`;
+  WHERE userId = "${userId}";`;
   const response = await db.all(sql)
     .then(rows => {
       return { failed: false, context: rows };
@@ -235,8 +235,8 @@ module.exports.getSubCategories = async function (userId, category) {
   const sql = `
   SELECT DISTINCT subcategory
   FROM transactions
-  WHERE userId = ${userId}
-  AND category = ${category};`;
+  WHERE userId = "${userId}"
+  AND category = "${category}";`;
   const response = await db.all(sql)
     .then(rows => {
       return { failed: false, context: rows };

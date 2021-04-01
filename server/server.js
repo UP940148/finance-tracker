@@ -4,11 +4,14 @@ const db = require('./database.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const googleAuth = require('simple-google-openid');
-const auth = googleAuth(config.OAUTH_CLIENT_ID);
+const auth = googleAuth(config.googleCredentials.web.client_id);
 
 const multer = require('multer');
 const fs = require('fs');
 const qif2json = require('qif2json');
+
+const readline = require('readline');
+const { google } = require('googleapis');
 
 const app = express();
 
@@ -108,7 +111,7 @@ app.use('/', googleAuth.guardMiddleware());
 // --- USER API Routes ---
 
 app.post('/user/', jsonParser, async (req, res) => {
-  const data = [parseInt(req.user.id), req.body.name, req.body.email];
+  const data = [req.user.id, req.body.name, req.body.email];
   const err = await db.createUser(data);
   // If an error occured, return 400
   if (err) {
@@ -163,7 +166,7 @@ app.patch('/user/', jsonParser, async (req, res) => {
   }
 
   // If user exists, proceed with update
-  const data = [req.body.name, req.body.email, parseInt(req.user.id)];
+  const data = [req.body.name, req.body.email, req.user.id];
   const err = await db.updateUser(data);
   // If an error occured, return 400
   if (err) {
@@ -310,7 +313,7 @@ app.get('/user/transactions/:startDate/:endDate/', async (req, res) => {
   }
 
   // If the user exists, retrieve requested transactions
-  response = await db.getUserTransactionsBetweenDates(parseInt(req.user.id), parseInt(req.params.startDate), parseInt(req.params.endDate));
+  response = await db.getUserTransactionsBetweenDates(req.user.id, parseInt(req.params.startDate), parseInt(req.params.endDate));
   // If an error occured, return 400
   if (response.failed) {
     res.status(400).json({
@@ -450,7 +453,7 @@ app.post('/upload-statement/', uploader.single('statement'), async (req, res) =>
           transaction.address = transaction.address.join(', ');
         }
         // Add entry to database
-        const data = [parseInt(req.user.id), transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
+        const data = [req.user.id, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
         const err = await db.createTransaction(data);
         if (err) {
           errors.append(err);
@@ -469,4 +472,84 @@ function qifToUnixTime(date) {
   const formattedDate = date.split(/[^\d+]/);
   const datum = new Date(Date.UTC(formattedDate[0], formattedDate[1] - 1, formattedDate[2], formattedDate[3], formattedDate[4], formattedDate[5]));
   return datum.getTime();
+}
+
+// --- GOOGLE CALENDAR SET UP ---
+// https://developers.google.com/calendar/quickstart/nodejs?hl=en_GB
+
+const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+const TOKEN_PATH = 'token.json';
+
+
+authorize(listEvents);
+
+
+// Create an OAuth2 client with the given credentials
+function authorize(callback) {
+  const oAuth2Client = new google.auth.OAuth2(
+    config.googleCredentials.web.client_id,
+    config.googleCredentials.web.client_secret,
+    config.googleCredentials.web.redirect_uris[0],
+  );
+
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, (err, token) => {
+    if (err) return getAccessToken(oAuth2Client, callback);
+    oAuth2Client.setCredentials(JSON.parse(token));
+    callback(oAuth2Client);
+  });
+}
+
+// Get and store new token after prompting for user authorization
+function getAccessToken(oAuth2Client, callback) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,
+  });
+  console.log('Authorize this app by visiting the url in authorize.txt');
+  fs.appendFile('authorize.txt', authUrl + '\n', function (err) {
+    if (err) throw err;
+    console.log('Saved!');
+  });
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  rl.question('Enter the code from that page here: ', (code) => {
+    rl.close();
+    oAuth2Client.getToken(code, (err, token) => {
+      if (err) return console.error('Error retrieving access token', err);
+      oAuth2Client.setCredentials(token);
+      // Store the token to disk for later program executions
+      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        if (err) return console.error(err);
+        console.log('Token stored to', TOKEN_PATH);
+      });
+      callback(oAuth2Client);
+    });
+  });
+}
+
+// Lists the next 10 events on the user's primary calendar
+function listEvents(auth) {
+  const calendar = google.calendar({ version: 'v3', auth });
+  calendar.events.list({
+    calendarId: 'primary',
+    timeMin: (new Date()).toISOString(),
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: 'startTime',
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const events = res.data.items;
+    if (events.length) {
+      console.log('Upcoming 10 events:');
+      events.map((event, i) => {
+        const start = event.start.dateTime || event.start.date;
+        console.log(`${start} - ${event.summary}`);
+      });
+    } else {
+      console.log('No upcoming events found.');
+    }
+  });
 }
