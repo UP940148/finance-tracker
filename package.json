@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --json --outputFile=__test__/testResults.json",
     "start": "node server/server.js"
   },
   "repository": {
