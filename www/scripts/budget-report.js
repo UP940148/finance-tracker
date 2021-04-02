@@ -189,5 +189,3 @@ function pageLoaded(){
 
 // Event listener used to determine when the page has been fully loaded
 window.addEventListener('load', pageLoaded);
-
-module.exports = bReport;

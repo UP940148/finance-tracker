@@ -8,3 +8,4 @@ test('Should return the total value of the array', () => {
   expect(bReport_Functions.monthlySpend(arr2)).toBe(4050);
   expect(bReport_Functions.monthlySpend(arr2)).not.toBe(4059);
 });
+
