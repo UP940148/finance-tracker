@@ -1,4 +1,4 @@
-/*global gapi*/
+/* global gapi, initPage */
 
 let userProfile;
 
