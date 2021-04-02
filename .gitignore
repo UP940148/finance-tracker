@@ -134,3 +134,4 @@ test.qif
 oldTest.qif
 authorize.txt
 token.json
+sqlite.db
