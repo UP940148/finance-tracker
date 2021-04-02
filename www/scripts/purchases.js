@@ -347,6 +347,9 @@ async function openEditWindow(transaction) {
   await addCategories(editCategoryDropdown);
   // Set current category
   editCategoryDropdown.value = transaction.category;
+  if (transaction.category === '') {
+    editCategoryDropdown.value = '---';
+  }
   // Add change event listeners
   editCategoryDropdown.addEventListener('change', () => {
     if (editCategoryDropdown.value === 'Other. Please Specify...') {
