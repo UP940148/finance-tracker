@@ -599,3 +599,90 @@ hr {
 .expenditure {
   color: red;
 }
+
+.even-space {
+  justify-content: space-evenly;
+}
+
+#editButton {
+  background-color: #FFC30B98;
+}
+
+#deleteButton {
+  background-color: #dc281898;
+}
+
+.button {
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: center;
+  width: 25%;
+  font-size: 150%;
+  padding: 4px;
+}
+
+#editForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1em;
+  max-width: 30em;
+  margin: 36px;
+}
+
+#modalTitle {
+  background-color: #f2f2f2;
+  padding: 24px;
+  padding-bottom: 12px;
+}
+
+#modalBody {
+  text-align: center;
+  padding-bottom: 36px;
+}
+
+#editSubmit {
+  cursor: pointer;
+  border-radius: 16px;
+  border: none;
+  background-color: #29a71898;
+  padding: 12px;
+  width: 40%;
+}
+
+/* Modal Styles taken from https://www.w3schools.com/howto/howto_css_modals.asp */
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  border: 1px solid #888;
+  width: 40%; /* Could be more or less, depending on screen size */
+}
+/* The Close Button */
+.modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 12px;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

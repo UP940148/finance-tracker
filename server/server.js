@@ -374,7 +374,7 @@ app.patch('/transaction/:transactionId/', jsonParser, async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-app.delete('/transaction/:transactionId', async (req, res) => {
+app.delete('/transaction/:transactionId/', async (req, res) => {
   // Check if transaction exists
   const response = await db.getTransactionById(req.params.transactionId);
   // If an error occured, return 400

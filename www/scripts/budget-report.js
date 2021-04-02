@@ -1,3 +1,4 @@
+/* global Chart, gapi */
 //Object used to store all of the DOM elements
 let element = {};
 
@@ -19,29 +20,51 @@ let data = {
     dec: [123,432,454,232,123,43]
 }
 
+async function getUserData() {
+  const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+
+  // Check if user has profile in the database
+  const response = await fetch('/categories/', {
+    headers: { Authorization: 'Bearer ' + idToken },
+    credentials: 'same-origin',
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const resData = await response.json();
+  const categoryList = [];
+  resData.data.forEach(object => {
+    categoryList.push(object.category);
+  });
+
+  monthlyReportChart.config.data.labels = categoryList;
+}
+
 // Code to set up the doughnut chart that displays the users monthly spending breakdown.
-let ctx = document.querySelector('#budget-graph').getContext('2d');
-let colour  = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
+const ctx = document.querySelector('#budget-graph').getContext('2d');
+let colour = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
 
 
 // Code used construct the doughnut chart.
-let monthlyReportChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: labels = [`Utility Bills `,`Food & Drink `,`Leisure`,`Health `,`Travel `,`Other`],
-        datasets: [{
-            data: [1,1,1,1,1,1],
-            backgroundColor: ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11']
-        }],
+const monthlyReportChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Utility Bills', 'Food & Drink', 'Leisure', 'Health', 'Travel', 'Other', 'Test'],
+    datasets: [{
+      data: [1, 1, 1, 1, 1, 1, 3],
+      backgroundColor: ['#FB3640', '#3585DD', '#C1DD35', '#35DDB7', '#EE8D11', '#000000', '#FF00FF'],
+    }],
+  },
+  options: {
+    responsive: true,
+    legend: {
+      position: 'bottom',
     },
-    options: {
-        responsive: true,
-        legend: {
-          position: 'bottom'
-        },
-        tooltips: true
-    }
-})
+    tooltips: true,
+  },
+});
 
 //function used to calculate the monthly total spend based on the sum of all the categories
 function monthlySpend(arr) {
@@ -67,15 +90,15 @@ function updateChart (piChartData) {
     monthlyReportChart.update();
 
     element.totalSpend.textContent = `Your Monthly Spend Is - £${monthlySpend(piChartData)}`
-    
+
 }
 
 //Function used by event listeners to highlight the month that they are currently viewing the information for
 function selectMonth(arr){
     for (let i = 0; i < element.months.length; i++) {
-        element.months[i].classList.remove('active-month'); 
+        element.months[i].classList.remove('active-month');
     }
-} 
+}
 
 
 // Code to set up the line chart that displays the users yearly spending breakdown.
@@ -110,9 +133,9 @@ let yearlyReportChart = new Chart(ctx2, {
         legend: {
           position: 'bottom'
         }
-        
+
     },
-    
+
 })
 
 
