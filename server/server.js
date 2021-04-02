@@ -210,6 +210,18 @@ app.delete('/user/', async (req, res) => {
 // --- TRANSACTION API Routes ---
 
 app.post('/transaction/', jsonParser, async (req, res) => {
+  // Categories should be stored lower case
+  if (req.body.category) {
+    req.body.category = req.body.category.toLowerCase();
+  } else {
+    req.body.category = '';
+  }
+  if (req.body.subcategory) {
+    req.body.subcategory = req.body.subcategory.toLowerCase();
+  } else {
+    req.body.subcategory = '';
+  }
+
   const data = [req.user.id, req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory];
   const err = await db.createTransaction(data);
   if (err) {
@@ -361,6 +373,17 @@ app.patch('/transaction/:transactionId/', jsonParser, async (req, res) => {
     });
     return;
   }
+  // Categories should be stored lower case
+  if (req.body.category) {
+    req.body.category = req.body.category.toLowerCase();
+  } else {
+    req.body.category = '';
+  }
+  if (req.body.subcategory) {
+    req.body.subcategory = req.body.subcategory.toLowerCase();
+  } else {
+    req.body.subcategory = '';
+  }
 
   // If transaction exists, proceed with update
   const data = [req.body.date, req.body.amount, req.body.memo, req.body.address, req.body.payee, req.body.category, req.body.subcategory, req.params.transactionId];
@@ -452,8 +475,20 @@ app.post('/upload-statement/', uploader.single('statement'), async (req, res) =>
         if (transaction.address) {
           transaction.address = transaction.address.join(', ');
         }
+        // Categories should be stored lower case
+        if (transaction.category) {
+          transaction.category = transaction.category.toLowerCase();
+        } else {
+          transaction.category = '';
+        }
+        if (transaction.subcategory) {
+          transaction.subcategory = transaction.subcategory.toLowerCase();
+        } else {
+          transaction.subcategory = '';
+        }
+
         // Add entry to database
-        const data = [req.user.id, transaction.date, transaction.amount, transaction.memo, transaction.address, transaction.payee, transaction.category, transaction.subcategory];
+        const data = [req.user.id, transaction.date, transaction.amount, transaction.memo || '', transaction.address || '', transaction.payee, transaction.category, transaction.subcategory];
         const err = await db.createTransaction(data);
         if (err) {
           errors.append(err);
@@ -481,7 +516,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 const TOKEN_PATH = 'token.json';
 
 
-authorize(listEvents);
+// authorize(listEvents);
 
 
 // Create an OAuth2 client with the given credentials
