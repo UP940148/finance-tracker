@@ -1,4 +1,4 @@
-/* global gapi */
+/* global gapi, beginLoading */
 const fileUploader = document.getElementById('fileUpload');
 
 fileUploader.addEventListener('change', handleFileSelect, false);
@@ -8,7 +8,6 @@ function handleFileSelect(e) {
   const reader = new FileReader();
 
   reader.readAsDataURL(file);
-  console.log(file);
   fileUpload(file);
 }
 
@@ -18,12 +17,11 @@ async function fileUpload(file) {
 
   const data = new FormData();
   data.append('statement', file);
-  const response = await fetch('/upload-statement/', {
+  await fetch('/upload-statement/', {
     headers: { Authorization: 'Bearer ' + idToken },
     credentials: 'same-origin',
     method: 'POST',
     body: data,
   });
-  const resData = await response.json();
-  console.log(resData);
+  beginLoading();
 }

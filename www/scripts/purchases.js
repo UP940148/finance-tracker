@@ -111,7 +111,7 @@ function displayTransaction(transaction) {
   if (transaction.address) addressItem.textContent = 'address: ' + transaction.address;
   const categoryItem = document.createElement('h4');
   categoryItem.style.fontStyle = 'italic';
-  if (transaction.category) categoryItem.textContent = 'Category: ' + transaction.category;
+  if (transaction.category) categoryItem.textContent = 'Category: ' + capitalizeFirstLetter(transaction.category);
 
   const transactionBodyButtonContainer = document.createElement('div');
   transactionBodyButtonContainer.classList.add('flex-container', 'even-space');
@@ -224,13 +224,25 @@ function loadNewPurchaseWindow() {
 
     <span class='center-text'>
       <h3>Category:</h3>
-      <input type='text' id='newCategory'></input>
+      <select id='newCategory'></select>
+      <input type='text' id='newUserCategory' style='display:none;'>
     </span>
   </div>
   <div id='submitPurchaseButton' class='transaction center-text' onclick='submitNewPurchase();'><h3>Finish and submit</h3></div>
   <div id='cancelPurchaseButton' class='transaction center-text' onclick='cancelPurchase();'><h3>Cancel</h3></div>`;
   newPurchaseTab.innerHTML = html;
   newPurchaseButton.style.display = 'none';
+
+  const newCategoryDropdown = document.getElementById('newCategory');
+
+  addCategories(newCategoryDropdown);
+  newCategoryDropdown.addEventListener('change', () => {
+    if (newCategoryDropdown.value === 'Other. Please Specify...') {
+      document.getElementById('newUserCategory').style.display = 'block';
+    } else {
+      document.getElementById('newUserCategory').style.display = 'none';
+    }
+  });
 }
 
 async function submitNewPurchase() {
@@ -242,6 +254,14 @@ async function submitNewPurchase() {
     address: document.getElementById('newAddress').value,
     category: document.getElementById('newCategory').value,
   };
+  // If other category selected, get new category name
+  console.log(data);
+  if (data.category === 'Other. Please Specify...') {
+    data.category = document.getElementById('newUserCategory').value;
+  } else if (data.category === '---') {
+    data.category = '';
+  }
+  // If any essential field is missing, return
   if (!data.payee || !data.date || !data.amount) {
     return;
   }
@@ -260,7 +280,8 @@ async function submitNewPurchase() {
   beginLoading();
 }
 
-function openEditWindow(transaction) {
+async function openEditWindow(transaction) {
+  console.log(transaction);
   const modalContainer = document.getElementById('modal');
 
   const modalWindow = document.createElement('div');
@@ -283,11 +304,8 @@ function openEditWindow(transaction) {
   const editSubmit = document.createElement('button');
   editSubmit.id = 'editSubmit';
   editSubmit.textContent = 'Save Changes';
-  editSubmit.addEventListener('click', async () => {
-    await submitChanges(transaction.transactionId);
-    beginLoading();
-    modalContainer.style.display = 'none';
-    modalWindow.remove();
+  editSubmit.addEventListener('click', () => {
+    submitChanges(transaction.transactionId);
   });
 
   const editHTML = `
@@ -304,13 +322,17 @@ function openEditWindow(transaction) {
     <input type='text' id='editMemo' value='${transaction.memo}'>
 
     <label for='editAddress'>Address:</label>
-    <input type='text' step=0.01 id='editAddress' value='${transaction.address}'>
+    <input type='text' id='editAddress' value='${transaction.address}'>
 
     <label for='editCategory'>Category:</label>
-    <input type='text' id='editCategory' value='${transaction.category}'>
+    <div>
+    <select id='editCategory' style='width:100%'></select>
+    <input type='text' id='editNewCategory' style='display:none;'>
+    </div>
   `;
 
   editForm.innerHTML = editHTML;
+
 
   modalBody.appendChild(editForm);
   modalBody.appendChild(editSubmit);
@@ -319,6 +341,20 @@ function openEditWindow(transaction) {
   modalWindow.appendChild(modalTitle);
   modalWindow.appendChild(modalBody);
   modalContainer.appendChild(modalWindow);
+
+  const editCategoryDropdown = document.getElementById('editCategory');
+
+  await addCategories(editCategoryDropdown);
+  // Set current category
+  editCategoryDropdown.value = transaction.category;
+  // Add change event listeners
+  editCategoryDropdown.addEventListener('change', () => {
+    if (editCategoryDropdown.value === 'Other. Please Specify...') {
+      document.getElementById('editNewCategory').style.display = 'block';
+    } else {
+      document.getElementById('editNewCategory').style.display = 'none';
+    }
+  });
 
   modalContainer.style.display = 'block';
 
@@ -344,9 +380,18 @@ async function submitChanges(transactionId) {
     address: document.getElementById('editAddress').value,
     category: document.getElementById('editCategory').value,
   };
+  // If other category selected, get new category name
+  if (data.category === 'Other. Please Specify...') {
+    data.category = document.getElementById('editNewCategory').value;
+  } else if (data.category === '---') {
+    data.category = '';
+  }
+  // If any essential field is missing, return
   if (!data.payee || !data.date || !data.amount) {
     return;
   }
+
+  // Push changes to database
   const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
   await fetch(`/transaction/${transactionId}/`, {
     headers: {
@@ -357,4 +402,52 @@ async function submitChanges(transactionId) {
     credentials: 'same-origin',
     body: JSON.stringify(data),
   });
+
+  // Reload page contents
+  beginLoading();
+  cancelPurchase();
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('editWindow').remove();
+}
+
+async function addCategories(element) {
+  // Create default categories
+  const undefinedCategory = document.createElement('option');
+  undefinedCategory.textContent = '---';
+  const otherCategory = document.createElement('option');
+  otherCategory.textContent = 'Other. Please Specify...';
+  element.appendChild(undefinedCategory);
+  element.appendChild(otherCategory);
+
+  const categoryList = [];
+  // Get all categories currently in use
+  const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+  const response = await fetch('/categories/', {
+    headers: {
+      Authorization: 'Bearer ' + idToken,
+    },
+    credentials: 'same-origin',
+  });
+  const resData = await response.json();
+
+  // If the categories aren't just '' then add to list
+  resData.data.forEach(item => {
+    console.log(item);
+    if (item.category.length > 0) {
+      categoryList.push(item.category);
+    }
+  });
+  categoryList.sort();
+
+  // For each category, add an option in the dropdown
+  categoryList.forEach(category => {
+    const newOption = document.createElement('option');
+    newOption.value = category;
+    newOption.textContent = capitalizeFirstLetter(category);
+    element.appendChild(newOption);
+  });
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

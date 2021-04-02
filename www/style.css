@@ -571,7 +571,7 @@ hr {
 #purchases {
   border-radius: 12px;
   border: 1px solid black;
-  height: 58vh;
+  max-height: 55vh;
   overflow-y: scroll;
 }
 
@@ -626,7 +626,11 @@ hr {
   grid-template-columns: 1fr 1fr;
   grid-gap: 1em;
   max-width: 30em;
-  margin: 36px;
+  margin-top: 36px;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 36px;
+  text-align: left;
 }
 
 #modalTitle {

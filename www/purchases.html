@@ -46,16 +46,22 @@
         </div>
         <br>
         <hr>
-        <h1 class='center-text' id='noTransactionsText'><br>No transactions found<br><br></h1>
-        <h1 class='center-text' id='somethingWrongText'><br>Something went wrong<br><br></h1>
+        <h1 class='center-text' id='noTransactionsText'>No transactions found<br><br></h1>
+        <h1 class='center-text' id='somethingWrongText'>Something went wrong<br><br></h1>
         <div id='purchasesContainer'>
           <div id=purchases>
-        </div>
+          </div>
           <div>
           <div id='newPurchaseButton'>
             <h2>+ Add New Purchase</h2>
           </div>
           <div id='newPurchaseTab'></div>
+          <div class="saving-tips-intro">
+            <section class='statement-upload' id='fileContainer'>
+              <p>Upload .qif bank statement</p>
+              <input type=file class='file-uploader' id='fileUpload' accept='.qif'/><br>
+            </section>
+          </div>
         </div>
         </div>
       </div>
@@ -64,4 +70,5 @@
   </body>
   <script src='/scripts/google-auth.js'></script>
   <script src='/scripts/purchases.js'></script>
+  <script src='/scripts/statement-upload.js'></script>
 </html>
