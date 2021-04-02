@@ -52,30 +52,61 @@ Code definitions taken from https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 ### User Routes
 
 - POST `<root>/user/` - Create a new record for a user
-  - JSON body is made up of `googleId (int)`, `name (text)`, and `email (text)`
+  - JSON body is made up of `name (text)`, and `email (text)`
   - Returns no JSON data
 - GET `<root>/users/` - Retrieves a list of all users in database
   - Takes no body or parameters
   - If successful, JSON data contains a list of all user records
-- GET `<root>/user/:googleId/` - Retrieves the user record associated with the provided id
+- GET `<root>/user/` - Retrieves the user record associated with the provided id
   - Takes `googleId (int)` as a parameter
   - If successful, JSON data contains the requested record
-- PATCH `<root>/user/:googleId/` - Updates the user record associated with the provided id
+- PATCH `<root>/user/` - Updates the user record associated with the provided id
   - Takes `googleId (int)` as a parameter and `name (text)`, and `email (text)` in the JSON body
   - Returns no JSON data
-- DELETE `<root>/user/:googleId/` - Deletes the user record associated with the provided id
+- DELETE `<root>/user/` - Deletes the user record associated with the provided id
   - Takes `googleId (int)` as a parameter
   - Returns no JSON data
 
 ### Transaction Routes
 
-- POST `<root>/transaction/`
+Transaction JSON:
+```js
+{
+  amount: (Decimal),
+  date: (Integer) representing Unix Timestamp,
+  memo: (String),
+  address: (String),
+  payee: (String),
+  category: (String),
+  subcategory: (String) Unused,
+}
+```
+
+- POST `<root>/transaction/` - Create a new transaction
+  - Takes Transaction JSON Object as the body
+  - Returns no JSON data
 - GET `<root>/transactions/`
+  - Takes no body or parameters
+  - Returns Transaction JSON Objects of all transactions
 - GET `<root>/transaction/:transactionId/`
-- GET `<root>/user/:userId/transactions/`
-- GET `<root>/user/:userId/transactions/:startDate/:endDate/`
+  - Takes no body
+  - Returns Transaction JSON Object of requested transaction
+- GET `<root>/user/transactions/`
+  - Takes no body or parameters
+  - Returns Transaction JSON Objects of all transactions associated with the user's account
+- GET `<root>/user/transactions/:startDate/:endDate/`
+  - Takes no body
+  - Returns Transaction JSON Objects of all transactions requested
 - PATCH `<root>/transaction/:transactionId/`
-- DELETE `<root>/transaction/:transactionId`
+  - Takes Transaction JSON Object as the body
+  - Returns no JSON
+- DELETE `<root>/transaction/:transactionId/`
+  - Takes no body
+  - Returns no JSON
+
+### Authentication
+
+All API routes except for `GET <root>/transactions/` and `GET <root>/users/` require authentication through the use of a google OAuth2 id bearer token to be sent in the request header
 
 ## Evaluation
 
