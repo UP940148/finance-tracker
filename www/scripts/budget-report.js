@@ -51,10 +51,10 @@ let colour = ['#FB3640','#3585DD','#C1DD35','#35DDB7','#EE8D11' ];
 const monthlyReportChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ['Utility Bills', 'Food & Drink', 'Leisure', 'Health', 'Travel', 'Other', 'Test'],
+    labels: ['Utility Bills', 'Food & Drink', 'Leisure', 'Health', 'Travel', 'Other'],
     datasets: [{
-      data: [1, 1, 1, 1, 1, 1, 3],
-      backgroundColor: ['#FB3640', '#3585DD', '#C1DD35', '#35DDB7', '#EE8D11', '#000000', '#FF00FF'],
+      data: [1, 1, 1, 1, 1, 1],
+      backgroundColor: ['#FB3640', '#3585DD', '#C1DD35', '#35DDB7', '#EE8D11', '#FF00FF'],
     }],
   },
   options: {
