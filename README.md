@@ -11,6 +11,8 @@ As mentioned, this project was undergone as a team. Our team consisted of:
 - UP939775 Shadille Samuels
 - UP932700 Zain Ahmed
 
+*All team members consented to the publicising of this repository*
+
 ## About This Repository
 This repository is set up for managing the development of T44's SETAP coursework
 
