@@ -1,5 +1,16 @@
 # Budgeting for Students App
 
+This repository was created for second year university coursework in my *'Software Engineering Theory and Practice'* module. We were tasked with creating a piece of software as a team. We chose to develop a web-based application to allow users to track their finances.\
+This project consisted of five sections. This code repository was handed in as part of part four, which was awarded 19.5/30 (65%). The overall mark for all five parts was 69.4/100 (69%).
+
+As mentioned, this project was undergone as a team. Our team consisted of:
+- UP940148 Daniel Ellis (*myself*)
+- UP960959 Glanyell White
+- UP939741 Glen Abossey
+- UP936979 Oliver Green
+- UP939775 Shadille Samuels
+- UP932700 Zain Ahmed
+
 ## About This Repository
 This repository is set up for managing the development of T44's SETAP coursework
 
